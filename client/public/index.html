@@ -22,10 +22,21 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
+    <title>Major's Cross Words</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div class="header">
+        <!-- ref: https://css-tricks.com/snippets/svg/curved-text-along-path/ -->
+        <svg viewBox="0 0 800 80">
+            <path id="curve" d="M 150 100 C 250 30, 550 30, 650 100" />
+            <text id="header-text">
+                <textPath xlink:href="#curve" text-anchor="middle" alignment-baseline="central" startOffset="50%">
+                Cross Words!
+                </textPath>
+            </text>
+        </svg>
+    </div>
     <div id="root"></div>
     <!--
       This HTML file is a template.
