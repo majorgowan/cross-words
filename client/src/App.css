@@ -129,11 +129,24 @@ path {
     width: 800px;
 }
 
-#puzzle-title {
+.puzzle-picker {
+    text-align: center;
+}
+
+.big-prompt {
+    font-size: 40px;
+    font-weight: normal;
+}
+
+.puzzle-list {
+    list-style: none;
+}
+
+.puzzle-title {
     color: #444;
 }
 
-#puzzle-author {
+.puzzle-author {
     color: #a44;
     font-family: 'Covered By Your Grace';
     font-style: cursive;

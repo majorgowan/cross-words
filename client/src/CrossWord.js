@@ -30,8 +30,8 @@ function Clue(props) {
 function PuzzleName(props) {
     return (
         <div className="title-block">
-            <h2 id="puzzle-title">{props.title}</h2>
-            <h4 id="puzzle-author">by {props.author}</h4>
+            <h2 className="puzzle-title">{props.title}</h2>
+            <h4 className="puzzle-author">by {props.author}</h4>
         </div>
     );
 }
@@ -429,7 +429,7 @@ var thePuzzle = {
 class CrossWord extends React.Component {
     render() {
         return (
-            <Puzzle puzzle={thePuzzle}/>
+            <Puzzle puzzle={this.props.puzzle}/>
         );
     }
 }

@@ -32,6 +32,21 @@ app.get("/api/puzzlelist", (req, res) => {
     console.log("Sent puzzle list!");
 });
 
+app.get("/api/puzzle/:title", (req, res) => {
+
+    var query = {"title": req.params.title};
+
+    Puzzle.findOne( query, (err, puzzle) => {
+        if (!err) {
+            res.json(puzzle);
+        } else {
+            res.json({});
+        }   
+    }); 
+
+    console.log("Sent puzzle!");
+});
+
 
 // The "catchall handler: for any request that doesn't
 // match one above, send back React's index.html file.
