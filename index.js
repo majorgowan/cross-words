@@ -1,19 +1,37 @@
 const express = require("express");
 const path = require("path");
 
+const Puzzle = require("./src/Puzzle.js");
 const app = express();
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, "client/build")));
 
 // Put all API endpoints under "/api"
-app.get("/api/puzzle", (req, res) => {
+app.get("/api/puzzlelist", (req, res) => {
 
-    // Return them as json
-    res.json( {"puzzle": "This is not a puzzle"} );
+    //if (req.query.species) {
+    //    query.species = req.query.species;
+    //}   
 
-    console.log("Sent puzzle!");
+    var query = {};
+    var options = {
+            "_id": 0,
+            "title": 1,
+            "author": 1
+        };
+
+    Puzzle.find( query, options, (err, puzzlelist) => {
+        if (!err) {
+            res.json(puzzlelist);
+        } else {
+            res.json({});
+        }   
+    }); 
+
+    console.log("Sent puzzle list!");
 });
+
 
 // The "catchall handler: for any request that doesn't
 // match one above, send back React's index.html file.
