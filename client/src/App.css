@@ -103,6 +103,7 @@ ol, ul {
     width: 95px;
     height: 95px;
     font-size:18px;
+    cursor: pointer;
 }
 
 .header {
@@ -144,6 +145,10 @@ path {
 
 .puzzle-title {
     color: #444;
+}
+
+.puzzle-title-item {
+    cursor: pointer;
 }
 
 .puzzle-author {
