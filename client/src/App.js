@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import CrossWord from './CrossWord.js';
-import PuzzleItem from './PuzzleItem.js';
+import PuzzlePicker from './PuzzlePicker.js';
 import './App.css';
 
 class App extends Component {
@@ -42,26 +42,22 @@ class App extends Component {
             );
     }
 
+    onMainMenuClick() {
+        // listener for back-to-main-menu button
+        this.setState({"puzzle": null});
+    }
+
     render() {
         if (this.state.puzzle) {
             return (
-                    <div>
-                         <CrossWord puzzle={this.state.puzzle}/>
-                    </div>
+                    <CrossWord puzzle={this.state.puzzle}
+                               onMainMenuButtonClick={() => this.onMainMenuClick()} />
                    );
         } else if (this.state.puzzlelist) {
             return (
-                    <div className="puzzle-picker">
-                        <h2 className="big-prompt">Please pick a puzzle!</h2>
-                        <ul className="puzzle-list">
-                            {this.state.puzzlelist.map((puzzleItem) => {
-                                return (
-                                    <PuzzleItem key={puzzleItem.title} item={puzzleItem} 
-                                                onClick={event => this.onPuzzleItemClick(event)} />);
-                            })}
-                        </ul>
-                    </div>
-                    );
+                    <PuzzlePicker puzzlelist={this.state.puzzlelist}
+                                  onClick={event => this.onPuzzleItemClick(event)} />
+                   );
         } else {
             return ( <div></div> );
         }

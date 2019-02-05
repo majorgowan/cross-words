@@ -87,7 +87,7 @@ ol, ul {
 .game-board {
     margin: 0 auto;
     text-align: center;
-    width: 600px;
+    width: 620px;
     display: inline-block;
 }
 
@@ -98,12 +98,13 @@ ol, ul {
     vertical-align: top;
 }
 
-.check-button {
-    background: #9b9;
-    width: 95px;
-    height: 95px;
+.general-button {
+    background: #aca;
+    width: 98px;
+    height: 60px;
     font-size:18px;
     cursor: pointer;
+    margin: 10px 0;
 }
 
 .header {
@@ -127,7 +128,7 @@ path {
 
 .main-block {
     text-align: center;
-    width: 800px;
+    width: 840px;
 }
 
 .puzzle-picker {
@@ -135,7 +136,7 @@ path {
 }
 
 .big-prompt {
-    font-size: 40px;
+    font-size: 30px;
     font-weight: normal;
 }
 
