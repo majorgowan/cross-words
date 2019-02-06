@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import CrossWord from './CrossWord.js';
+import Creator from './Creator.js';
 import PuzzlePicker from './PuzzlePicker.js';
 import './App.css';
 
@@ -49,6 +50,9 @@ class App extends Component {
 
     render() {
         if (this.state.puzzle) {
+            //return (
+            //        <Creator onMainMenuButtonClick={() => this.onMainMenuClick()} />
+            //       );
             return (
                     <CrossWord puzzle={this.state.puzzle}
                                onMainMenuButtonClick={() => this.onMainMenuClick()} />
