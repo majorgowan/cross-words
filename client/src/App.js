@@ -50,9 +50,9 @@ class App extends Component {
 
     render() {
         if (this.state.puzzle) {
-            //return (
-            //        <Creator onMainMenuButtonClick={() => this.onMainMenuClick()} />
-            //       );
+            return (
+                    <Creator onMainMenuButtonClick={() => this.onMainMenuClick()} />
+                   );
             return (
                     <CrossWord puzzle={this.state.puzzle}
                                onMainMenuButtonClick={() => this.onMainMenuClick()} />
