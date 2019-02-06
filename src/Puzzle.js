@@ -8,8 +8,8 @@ var Schema = mongoose.Schema;
 
 var puzzleSchema = new Schema( {
     title: {type: String, required: true, unique: true},
-    author: {type: String, required: true, unique: true},
-    date: {type: String, required: true, unique: true},
+    author: {type: String, required: true},
+    date: {type: String, required: true},
     puzzle: [{
                 clue: {type: String, required: true},
                 answer: {type: String, required: true},
