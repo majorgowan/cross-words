@@ -227,9 +227,6 @@ class Puzzle extends React.Component {
         let nextsquare = squares[nextfocus[0]][nextfocus[1]];
         if (!nextsquare["off"]) {
             focus = nextfocus;
-            // this needs to be fixed a litte:
-            // if we change direction but there is no crossing clue
-            // it should not change the activeClue
         }
         nextsquare = squares[focus[0]][focus[1]];
         if (nextacross && nextsquare["acrossclue"]) {
@@ -326,7 +323,6 @@ class Puzzle extends React.Component {
         });
         this.setState({"squares": squares});
     }
-
 
     render() {
         return (
