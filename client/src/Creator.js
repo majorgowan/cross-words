@@ -21,8 +21,8 @@ class PuzzleBuilder extends React.Component {
     }
 
     initPuzzle() {
-        let ncols = 10;
-        let nrows = 10;
+        let ncols = 4;
+        let nrows = 4;
 
         // create the array of squares
         var squares = Array(nrows);
@@ -32,11 +32,6 @@ class PuzzleBuilder extends React.Component {
                 squares[j][i] = {
                     "off": true, 
                     "value": "",
-                    "cluenumber": "",
-                    "acrossclue": null,
-                    "downclue": null,
-                    "correct": null,
-                    "wrong": null,
                 };
             }
         }
@@ -62,6 +57,7 @@ class PuzzleBuilder extends React.Component {
 
         if ((keyPressed.length === 1) && (keyPressed >= "A") && (keyPressed <= "z")) {
             squares[focus[0]][focus[1]]["value"] = keyPressed;
+            squares[focus[0]][focus[1]]["off"] = false;
             if (this.state.across) {
                 nextfocus[1] = Math.min(ncols - 1, focus[1] + 1);
             } else {
@@ -108,6 +104,7 @@ class PuzzleBuilder extends React.Component {
         }
 
         focus = nextfocus;
+        across = nextacross;
 
         this.setState({"focus": focus,
                        "across": across,
@@ -162,18 +159,24 @@ class PuzzleBuilder extends React.Component {
     }
 
     render() {
+        let game_board_class = "game-board";
+        if (this.state.squares[0].length < 6) {
+            game_board_class += " narrow-board";
+        }
         return (
             <div className="main-block">
                 <div className="side-panel"></div>
                 <div className="game-board">
-                    <div onKeyDown={(event) => this.handleKeyPress(event)}>
-                        {this.state.squares.map((row, j) => {
-                            return <div key={"row_" + j} className="board-row">{row.map((sq, i) => {
-                                return this.renderSquare(j, i);
-                            })}</div>;
-                        })}
-                    </div>
-                    <div>
+                    <div className={game_board_class}>
+                        <div onKeyDown={(event) => this.handleKeyPress(event)}>
+                            {this.state.squares.map((row, j) => {
+                                return <div key={"row_" + j} className="board-row">{row.map((sq, i) => {
+                                    return this.renderSquare(j, i);
+                                })}</div>;
+                            })}
+                        </div>
+                        <div>
+                        </div>
                     </div>
                 </div>
                 <div className="side-panel">
