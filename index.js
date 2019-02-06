@@ -1,4 +1,5 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const path = require("path");
 
 const Puzzle = require("./src/Puzzle.js");
@@ -7,6 +8,11 @@ const app = express();
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, "client/build")));
 
+// For parsing json requests
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// ==================================================
 // Put all API endpoints under "/api"
 app.get("/api/puzzlelist", (req, res) => {
 
@@ -47,6 +53,14 @@ app.get("/api/puzzle/:title", (req, res) => {
     console.log("Sent puzzle!");
 });
 
+// Receive puzzle json
+app.post("/api/sendpuzzle", (req, res) => {
+    console.log(req.body);
+    res.json({"success": 1,
+              "failure": req.body});
+});
+
+// ==================================================
 
 // The "catchall handler: for any request that doesn't
 // match one above, send back React's index.html file.
