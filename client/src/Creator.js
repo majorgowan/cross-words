@@ -166,20 +166,17 @@ class PuzzleBuilder extends React.Component {
         return (
             <div className="main-block">
                 <div className="side-panel"></div>
-                <div className="game-board">
-                    <div className={game_board_class}>
-                        <div onKeyDown={(event) => this.handleKeyPress(event)}>
-                            {this.state.squares.map((row, j) => {
-                                return <div key={"row_" + j} className="board-row">{row.map((sq, i) => {
-                                    return this.renderSquare(j, i);
-                                })}</div>;
-                            })}
-                        </div>
-                        <div>
-                        </div>
+                <div className={game_board_class}>
+                    <div onKeyDown={(event) => this.handleKeyPress(event)}>
+                        {this.state.squares.map((row, j) => {
+                            return <div key={"row_" + j} className="board-row">{row.map((sq, i) => {
+                                return this.renderSquare(j, i);
+                            })}</div>;
+                        })}
                     </div>
                 </div>
-                <div className="side-panel">
+                <div className="side-panel"></div>
+                <div className="horiz-button-panel">
                     <GeneralButton text="Send Puzzle"
                                    onClick={() => this.sendPuzzle()} />
                     <GeneralButton text="Main Menu"

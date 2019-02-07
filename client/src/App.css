@@ -6,7 +6,7 @@ body {
     margin-left: auto;
     margin-right: auto;
     margin-top: 50px;
-    width: 800px;
+    width: 840px;
     background: #bcb;
 }
 
@@ -97,7 +97,6 @@ ol, ul {
 
 .side-panel {
     width: 100px;
-    height: 300px;
     display: inline-block;
     vertical-align: top;
 }
@@ -108,11 +107,11 @@ ol, ul {
     height: 60px;
     font-size:18px;
     cursor: pointer;
-    margin: 10px 0;
+    margin: 10px 10px;
 }
 
 .header {
-    width: 800px;
+    width: 100%;
 }
 
 path {
@@ -132,7 +131,7 @@ path {
 
 .main-block {
     text-align: center;
-    width: 840px;
+    width: 100%;
 }
 
 .puzzle-picker {
@@ -146,6 +145,14 @@ path {
 
 .puzzle-list {
     list-style: none;
+}
+                        
+.horiz-button-panel {
+    text-align: center;
+    width: 80%;
+    background: #afbfaf;
+    margin: 50px auto;
+    border-radius: 20px;
 }
 
 .puzzle-title {

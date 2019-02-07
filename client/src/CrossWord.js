@@ -344,11 +344,12 @@ class Puzzle extends React.Component {
                         {this.renderClue()}
                     </div>
                 </div>
-                <div className="side-panel">
-                    <GeneralButton text="Check Answers!"
-                                   onClick={() => this.checkAnswers()} />
+                <div className="side-panel"></div>
+                <div className="horiz-button-panel">
                     <GeneralButton text="Main Menu"
                                    onClick={this.props.onMainMenuButtonClick} />
+                    <GeneralButton text="Check Answers!"
+                                   onClick={() => this.checkAnswers()} />
                 </div>
             </div>
         );
