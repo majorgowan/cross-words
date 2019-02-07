@@ -68,7 +68,7 @@ class Puzzle extends React.Component {
             "acrossclues": acrossclues,
             "focus": focus,
             "activeClue": activeClue,
-            "across": across, 
+            "across": across 
         };
     }
 
@@ -99,7 +99,7 @@ class Puzzle extends React.Component {
                     "acrossclue": null,
                     "downclue": null,
                     "correct": null,
-                    "wrong": null,
+                    "wrong": null
                 };
             }
         }
@@ -191,21 +191,25 @@ class Puzzle extends React.Component {
                 }
             }
         } else if (keyPressed === "ARROWLEFT") {
+            event.preventDefault();
             if (across) {
                 nextfocus[1] = Math.max(0, focus[1] - 1);
             }
             nextacross = true;
         } else if (keyPressed === "ARROWRIGHT") {
+            event.preventDefault();
             if (across) {
                 nextfocus[1] = Math.min(ncols - 1, focus[1] + 1);
             }
             nextacross = true;
         } else if (keyPressed === "ARROWUP") {
+            event.preventDefault();
             if (!across) {
                 nextfocus[0] = Math.max(0, focus[0] - 1);
             }
             nextacross = false;
         } else if (keyPressed === "ARROWDOWN") {
+            event.preventDefault();
             if (!across) {
                 nextfocus[0] = Math.min(nrows - 1, focus[0] + 1);
             }
@@ -241,7 +245,7 @@ class Puzzle extends React.Component {
         this.setState({"focus": focus,
                        "across": across,
                        "squares": squares,
-                       "activeClue": activeClue,
+                       "activeClue": activeClue
         });
     }
 

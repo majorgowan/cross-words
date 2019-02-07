@@ -19,6 +19,23 @@ function GeneralButton(props) {
     );
 }
 
+function ExpanderButton(props) {
+    let cn = "general-button"
+    if (props.orient == "horiz") {
+        cn = cn + " horiz-button";
+    } else {
+        cn = cn + " vert-button";
+    }
+        
+    return (
+        <button className={cn}
+                onClick={ props.onClick } >
+            {props.text}
+        </button>
+    );
+}
+
+
 function Clue(props) {
     return (
         <h3 id="clue-text">{props.text}</h3>
@@ -34,4 +51,4 @@ function PuzzleName(props) {
     );
 }
 
-export { Square, GeneralButton, Clue, PuzzleName };
+export { Square, GeneralButton, ExpanderButton, Clue, PuzzleName };

@@ -45,16 +45,16 @@ ol, ul {
 }
 
 .cluenumber {
-    font-size:12px;
+    font-size:11px;
     background-color: transparent;
-    width:12px;
-    line-height: 12px;
+    width:11px;
+    line-height: 11px;
     text-align: center;
     color:#444;
     z-index: 2;
     border-radius: 3px;
     position: absolute;
-    left: 2px;
+    left: 1px;
     top: 2px;
 }
 
@@ -101,6 +101,15 @@ ol, ul {
     vertical-align: top;
 }
 
+/* buttons ... */
+.horiz-button-panel {
+    text-align: center;
+    width: 80%;
+    background: #afbfaf;
+    margin: 50px auto;
+    border-radius: 20px;
+}
+
 .general-button {
     background: #aca;
     width: 98px;
@@ -109,6 +118,32 @@ ol, ul {
     cursor: pointer;
     margin: 10px 10px;
 }
+
+.horiz-button {
+    width: 120px;
+    height: 30px;
+}
+
+.vert-button {
+    width: 30px;
+    height: 120px;
+}
+
+/* table layout ... */
+.table-wrapper {
+    display: table;
+    margin: auto;
+}
+
+.table-row {
+    display: table-row;
+}
+
+.table-cell {
+    display: table-cell;
+    vertical-align: middle;
+}
+
 
 .header {
     width: 100%;
@@ -147,14 +182,6 @@ path {
     list-style: none;
 }
                         
-.horiz-button-panel {
-    text-align: center;
-    width: 80%;
-    background: #afbfaf;
-    margin: 50px auto;
-    border-radius: 20px;
-}
-
 .puzzle-title {
     color: #444;
 }

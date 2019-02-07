@@ -1,6 +1,6 @@
 import React from 'react';
-import { Square, GeneralButton, Clue,
-         PuzzleName } from './Elements.js';
+import { Square, GeneralButton, ExpanderButton, 
+         Clue, PuzzleName } from './Elements.js';
 
 class PuzzleBuilder extends React.Component {
     constructor(props) {
@@ -16,13 +16,13 @@ class PuzzleBuilder extends React.Component {
             "squares": squares,
             "focus": focus,
             "activeClue": activeClue,
-            "across": across, 
+            "across": across 
         };
     }
 
     initPuzzle() {
-        let ncols = 4;
-        let nrows = 4;
+        let ncols = 5;
+        let nrows = 5;
 
         // create the array of squares
         var squares = Array(nrows);
@@ -32,11 +32,46 @@ class PuzzleBuilder extends React.Component {
                 squares[j][i] = {
                     "off": true, 
                     "value": "",
+                    "cluenumber": ""
                 };
             }
         }
-        console.log(squares);
         return squares;
+    }
+
+    setClueNumbers() {
+        let squares = this.state.squares;
+        let clue_counter = 1;
+        
+        for (let row=0; row < squares.length; row++) {
+            for (let col=0; col < squares[0].length; col++) {
+                let square = squares[row][col];
+                square["cluenumber"] = "";
+                if (!square["off"]) {
+                    let increment = false;
+                    // if square above is off and below is on
+                    if ((row == 0 || squares[row-1][col]["off"])
+                            && (row < squares.length - 1)
+                            && !squares[row+1][col]["off"]) {
+                        square["cluenumber"] = clue_counter;
+                        increment = true;
+                    }
+
+                    // if square to left is off and right is on
+                    if ((col == 0 || squares[row][col-1]["off"])
+                            && (col < squares[0].length - 1)
+                            && !squares[row][col+1]["off"]) {
+                        square["cluenumber"] = clue_counter;
+                        increment = true;
+                    }
+
+                    if (increment) {
+                        clue_counter += 1;
+                    }
+                }
+            }
+        }
+        this.setState({"squares": squares});
     }
 
     handleClick(j, i) {
@@ -64,21 +99,25 @@ class PuzzleBuilder extends React.Component {
                 nextfocus[0] = Math.min(nrows - 1, focus[0] + 1);
             }
         } else if (keyPressed === "ARROWLEFT") {
+            event.preventDefault();
             if (across) {
                 nextfocus[1] = Math.max(0, focus[1] - 1);
             }
             nextacross = true;
         } else if (keyPressed === "ARROWRIGHT") {
+            event.preventDefault();
             if (across) {
                 nextfocus[1] = Math.min(ncols - 1, focus[1] + 1);
             }
             nextacross = true;
         } else if (keyPressed === "ARROWUP") {
+            event.preventDefault();
             if (!across) {
                 nextfocus[0] = Math.max(0, focus[0] - 1);
             }
             nextacross = false;
         } else if (keyPressed === "ARROWDOWN") {
+            event.preventDefault();
             if (!across) {
                 nextfocus[0] = Math.min(nrows - 1, focus[0] + 1);
             }
@@ -110,6 +149,7 @@ class PuzzleBuilder extends React.Component {
                        "across": across,
                        "squares": squares,
         });
+        this.setClueNumbers();
     }
 
     hasfocus(j, i) {
@@ -137,7 +177,6 @@ class PuzzleBuilder extends React.Component {
 
     sendPuzzle() {
         console.log("Going to send puzzle!");
-        console.log(this.props.puzzle);
         fetch("api/sendpuzzle",
                 {
                     method: "POST",
@@ -166,21 +205,49 @@ class PuzzleBuilder extends React.Component {
         return (
             <div className="main-block">
                 <div className="side-panel"></div>
-                <div className={game_board_class}>
-                    <div onKeyDown={(event) => this.handleKeyPress(event)}>
-                        {this.state.squares.map((row, j) => {
-                            return <div key={"row_" + j} className="board-row">{row.map((sq, i) => {
-                                return this.renderSquare(j, i);
-                            })}</div>;
-                        })}
+
+                <div className="table-wrapper">
+                    <div className="table-row">
+                        <div className="table-cell"></div>
+                        <div className="table-cell">
+                            <ExpanderButton text="+" onClick={(event) => {}} orient="horiz" />
+                        </div>
+                        <div className="table-cell"></div>
+                    </div>
+                    <div className="table-row">
+                        <div className="table-cell">
+                            <ExpanderButton text="+" onClick={(event) => {}} orient="vert" />
+                        </div>
+                        <div className="table-cell">
+                            <div className={game_board_class}>
+                                <div onKeyDown={(event) => this.handleKeyPress(event)}>
+                                    {this.state.squares.map((row, j) => {
+                                        return <div key={"row_" + j} className="board-row">{row.map((sq, i) => {
+                                            return this.renderSquare(j, i);
+                                        })}</div>;
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="table-cell">
+                            <ExpanderButton text="+" onClick={(event) => {}} orient="vert" />
+                        </div>
+                    </div>
+                    <div className="table-row">
+                        <div className="table-cell"></div>
+                        <div className="table-cell">
+                            <ExpanderButton text="+" onClick={(event) => {}} orient="horiz" />
+                        </div>
+                        <div className="table-cell"></div>
                     </div>
                 </div>
+
                 <div className="side-panel"></div>
                 <div className="horiz-button-panel">
-                    <GeneralButton text="Send Puzzle"
-                                   onClick={() => this.sendPuzzle()} />
                     <GeneralButton text="Main Menu"
                                    onClick={this.props.onMainMenuButtonClick} />
+                    <GeneralButton text="Send Puzzle"
+                                   onClick={() => this.sendPuzzle()} />
                 </div>
             </div>
         );
