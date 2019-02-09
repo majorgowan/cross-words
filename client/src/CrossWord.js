@@ -328,10 +328,12 @@ class Puzzle extends React.Component {
     }
 
     render() {
+        let board_width_style = {"width": 40*this.state.squares[0].length + 150};
+        
         return (
             <div className="main-block">
                 <div className="side-panel"></div>
-                <div className="game-board">
+                <div className="game-board" style={board_width_style}>
                     <div>
                         <PuzzleName title={this.props.puzzle.title}
                                     author={this.props.puzzle.author}/>

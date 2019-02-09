@@ -323,20 +323,16 @@ class PuzzleBuilder extends React.Component {
 
     getCurrentClue(j, i, across) {
         let square = this.state["squares"][j][i];
-        let clue;
 
         if (!square["off"]) {
-            if (across && square["acrossclue"]) {
-                clue = this.state.puzzle.puzzle[square["acrossclue"]];
-            } else if (square["downclue"]) {
-                clue = this.state.puzzle.puzzle[square["downclue"]];
-            } else {
-                clue = null;
+            if (across && (square["acrossclue"] != null)) {
+                return this.state.puzzle.puzzle[square["acrossclue"]];
+            } else if (square["downclue"] != null) {
+                return this.state.puzzle.puzzle[square["downclue"]];
             }
         }
 
-        console.log("across: " + across + " acrossclue: " + square["acrossclue"] + " downclue: " + square["downclue"] + " activeClue: " + this.state.activeClue);
-        return clue;
+        return null;
     }
 
     handleClick(j, i) {
@@ -349,9 +345,8 @@ class PuzzleBuilder extends React.Component {
         }        
 
         let clue = this.getCurrentClue(j, i, across);
-        activeClue = (clue ? clue["number"] : activeClue);
+        activeClue = (clue ? clue["number"] : null);
 
-        focus = [j, i];
         this.setState({"focus": [j, i],
                        "activeClue": activeClue,
                        "across": across,
@@ -421,16 +416,14 @@ class PuzzleBuilder extends React.Component {
             }
         }
 
-        focus = nextfocus;
-        across = nextacross;
 
         let activeClue = this.state.activeClue;
-        let clue = this.getCurrentClue(focus[0], focus[1], across);
-        console.log(clue);
+        let clue = this.getCurrentClue(nextfocus[0], nextfocus[1], nextacross);
+
         activeClue = (clue ? clue["number"] : activeClue);
 
-        this.setState({"focus": focus,
-                       "across": across,
+        this.setState({"focus": nextfocus,
+                       "across": nextacross,
                        "squares": squares,
                        "activeClue": activeClue
         });
@@ -449,8 +442,9 @@ class PuzzleBuilder extends React.Component {
             cn = (this.hasfocus(j, i) ? cn + " hasfocus" : cn);
         } else if (square["wrong"]) {
             cn = cn + " wrong";
-        } else if ((this.state.across && (square["acrossclue"] === this.state.activeClue))
-                   || (!this.state.across && (square["downclue"] === this.state.activeClue))) {
+        } else if ((this.state.activeClue != null) &&
+                   ((this.state.across && (square["acrossclue"] === this.state.activeClue))
+                     || (!this.state.across && (square["downclue"] === this.state.activeClue)))) {
             cn = cn + " active-clue";
         }        
         return <Square key={"sq " + this.state.squares[0].length * j + i}
@@ -484,7 +478,6 @@ class PuzzleBuilder extends React.Component {
     }
 
     render() {
-        let game_board_class = "game-board";
         let board_width_style = {"width": 40*this.state.squares[0].length + 150};
 
         return (
@@ -492,7 +485,7 @@ class PuzzleBuilder extends React.Component {
 
                 <div className="side-panel"></div>
 
-                <div className={game_board_class} style={board_width_style}>
+                <div className="game-board" style={board_width_style}>
 
                     <div className="table-row">
                         <div className="table-cell"></div>
