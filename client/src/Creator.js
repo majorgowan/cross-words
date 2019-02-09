@@ -45,12 +45,13 @@ class PuzzleBuilder extends React.Component {
         }
     }
 
-    createClueObject(across, start, answer) {
+    createClueObject(across, start, answer, number) {
         return {
             "clue": "",
             "answer": answer,
             "across": across,
-            "start": start
+            "start": start,
+            "number": number
         }
     }
 
@@ -78,14 +79,14 @@ class PuzzleBuilder extends React.Component {
         let ncols = oldsquares[0].length;
         let squares;
 
-        if (side == "top") {
+        if (side === "top") {
             squares = this.initPuzzle(nrows + 1, ncols);
             for (let row = 1; row < nrows + 1; row++) {
                 for (let col = 0; col < ncols; col++) {
                     squares[row][col] = oldsquares[row-1][col];
                 }
             }
-        } else if (side == "left") {
+        } else if (side === "left") {
             squares = this.initPuzzle(nrows, ncols + 1);
             for (let row = 0; row < nrows; row++) {
                 for (let col = 1; col < ncols + 1; col++) {
@@ -94,9 +95,9 @@ class PuzzleBuilder extends React.Component {
             }
         } else {
 
-            if (side == "bottom")
+            if (side === "bottom")
                 squares = this.initPuzzle(nrows + 1, ncols);
-            else if (side == "right")
+            else if (side === "right")
                 squares = this.initPuzzle(nrows, ncols + 1);
 
             for (let row = 0; row < nrows; row++) {
@@ -179,7 +180,8 @@ class PuzzleBuilder extends React.Component {
                     } else {
                         // create new clue and assign it
                         let answer = characters.join("");
-                        let newClue = this.createClueObject(true, [row, col], answer);
+                        let newClue = this.createClueObject(true, [row, col], answer,
+                                                            clues.length);
                         clues.push(newClue);
                         for (let letter = 0; letter < word.length; letter++) {
                             squares[row][col + letter]["acrossclue"] = clues.length - 1;
@@ -189,7 +191,7 @@ class PuzzleBuilder extends React.Component {
 
                     // clear acrossclue for squares on same row with winner
                     for (let letter=col; letter < ncols; letter++) {
-                        if (squares[row][letter]["acrossclue"] == winner) {
+                        if (squares[row][letter]["acrossclue"] === winner) {
                             squares[row][letter]["acrossclue"] = null;
                         }
                     }
@@ -233,7 +235,8 @@ class PuzzleBuilder extends React.Component {
                     } else {
                         // create new clue and assign it
                         let answer = characters.join("");
-                        let newClue = this.createClueObject(false, [row, col], answer);
+                        let newClue = this.createClueObject(false, [row, col], answer,
+                                                            clues.length);
                         clues.push(newClue);
                         for (let letter = 0; letter < word.length; letter++) {
                             squares[row+letter][col]["downclue"] = clues.length - 1;
@@ -243,7 +246,7 @@ class PuzzleBuilder extends React.Component {
                     
                     // clear acrossclue for squares on same row with winner
                     for (let letter=row; letter < nrows; letter++) {
-                        if (squares[letter][col]["downclue"] == winner) {
+                        if (squares[letter][col]["downclue"] === winner) {
                             squares[letter][col]["downclue"] = null;
                         }
                     }
@@ -262,8 +265,8 @@ class PuzzleBuilder extends React.Component {
             for (let jj=0; jj<nrows*ncols; jj++) {
                 let row = Math.floor(jj / ncols);
                 let col = jj - row * ncols;
-                if ((squares[row][col]["acrossclue"] == iclue)
-                        || (squares[row][col]["downclue"] == iclue)) {
+                if ((squares[row][col]["acrossclue"] === iclue)
+                        || (squares[row][col]["downclue"] === iclue)) {
                     found += 1;
                     if (found > 1) {
                         remove = false;
@@ -276,7 +279,6 @@ class PuzzleBuilder extends React.Component {
             }
         }
 
-        console.log(clues);
         puzzle.puzzle = clues;
         this.setState({"puzzle": puzzle});
     }
@@ -295,7 +297,7 @@ class PuzzleBuilder extends React.Component {
                 if (!square["off"]) {
                     let increment = false;
                     // if square above is off and below is on
-                    if ((row == 0 || squares[row-1][col]["off"])
+                    if ((row === 0 || squares[row-1][col]["off"])
                             && (row < squares.length - 1)
                             && !squares[row+1][col]["off"]) {
                         square["cluenumber"] = clue_counter;
@@ -303,7 +305,7 @@ class PuzzleBuilder extends React.Component {
                     }
 
                     // if square to left is off and right is on
-                    if ((col == 0 || squares[row][col-1]["off"])
+                    if ((col === 0 || squares[row][col-1]["off"])
                             && (col < squares[0].length - 1)
                             && !squares[row][col+1]["off"]) {
                         square["cluenumber"] = clue_counter;
@@ -319,9 +321,41 @@ class PuzzleBuilder extends React.Component {
         this.setState({"squares": squares});
     }
 
+    getCurrentClue(j, i, across) {
+        let square = this.state["squares"][j][i];
+        let clue;
+
+        if (!square["off"]) {
+            if (across && square["acrossclue"]) {
+                clue = this.state.puzzle.puzzle[square["acrossclue"]];
+            } else if (square["downclue"]) {
+                clue = this.state.puzzle.puzzle[square["downclue"]];
+            } else {
+                clue = null;
+            }
+        }
+
+        console.log("across: " + across + " acrossclue: " + square["acrossclue"] + " downclue: " + square["downclue"] + " activeClue: " + this.state.activeClue);
+        return clue;
+    }
+
     handleClick(j, i) {
-        let focus = [j, i];
-        this.setState({"focus": [j, i]});
+        let across = this.state.across;
+        let focus = this.state.focus;
+        let activeClue = this.state.activeClue;
+
+        if ((focus[0] === j) && (focus[1] === i)) {
+            across = !across;
+        }        
+
+        let clue = this.getCurrentClue(j, i, across);
+        activeClue = (clue ? clue["number"] : activeClue);
+
+        focus = [j, i];
+        this.setState({"focus": [j, i],
+                       "activeClue": activeClue,
+                       "across": across,
+        });
     }
 
     handleKeyPress(event) {
@@ -390,9 +424,15 @@ class PuzzleBuilder extends React.Component {
         focus = nextfocus;
         across = nextacross;
 
+        let activeClue = this.state.activeClue;
+        let clue = this.getCurrentClue(focus[0], focus[1], across);
+        console.log(clue);
+        activeClue = (clue ? clue["number"] : activeClue);
+
         this.setState({"focus": focus,
                        "across": across,
                        "squares": squares,
+                       "activeClue": activeClue
         });
         this.setClues();
         this.setClueNumbers();

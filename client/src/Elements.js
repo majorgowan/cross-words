@@ -21,7 +21,7 @@ function GeneralButton(props) {
 
 function ExpanderButton(props) {
     let cn = "general-button"
-    if (props.orient == "horiz") {
+    if (props.orient === "horiz") {
         cn = cn + " horiz-button";
     } else {
         cn = cn + " vert-button";

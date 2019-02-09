@@ -159,8 +159,7 @@ class Puzzle extends React.Component {
         let clue = this.getCurrentClue(j, i, across);
         activeClue =  (clue ? clue["number"] : activeClue);
 
-        this.setState({"squares": squares,
-                       "focus": [j, i],
+        this.setState({"focus": [j, i],
                        "activeClue": activeClue,
                        "across": across,
         });
