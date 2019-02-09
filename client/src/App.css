@@ -91,10 +91,6 @@ ol, ul {
     display: inline-block;
 }
 
-.narrow-board {
-    width: 310px;
-}
-
 .side-panel {
     width: 100px;
     display: inline-block;
@@ -117,22 +113,26 @@ ol, ul {
     font-size:18px;
     cursor: pointer;
     margin: 10px 10px;
+    color: #464;
 }
 
 .horiz-button {
-    width: 120px;
-    height: 30px;
+    width: 80px;
+    height: 55px;
+    font-size: 40px;
+    text-align: center;
 }
 
 .vert-button {
-    width: 30px;
-    height: 120px;
+    width: 55px;
+    height: 80px;
+    font-size: 40px;
+    text-align: center;
 }
 
 /* table layout ... */
 .table-wrapper {
-    display: table;
-    margin: auto;
+    display: inline-block;
 }
 
 .table-row {
@@ -143,7 +143,6 @@ ol, ul {
     display: table-cell;
     vertical-align: middle;
 }
-
 
 .header {
     width: 100%;
