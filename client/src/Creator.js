@@ -1,6 +1,6 @@
 import React from 'react';
 import { Square, GeneralButton, ExpanderButton, 
-         Clue, PuzzleName } from './Elements.js';
+         Clue, EditableClue, PuzzleName } from './Elements.js';
 import { Modal } from './Modals.js';
 
 
@@ -32,13 +32,13 @@ class PuzzleBuilder extends React.Component {
         }
     }
 
-    createClueObject(across, start, answer, number) {
+    createClueObject(across, start, answer) {
         return {
             "clue": "",
             "answer": answer,
             "across": across,
             "start": start,
-            "number": number
+            "number": null
         }
     }
 
@@ -167,8 +167,7 @@ class PuzzleBuilder extends React.Component {
                     } else {
                         // create new clue and assign it
                         let answer = characters.join("");
-                        let newClue = this.createClueObject(true, [row, col], answer,
-                                                            clues.length);
+                        let newClue = this.createClueObject(true, [row, col], answer);
                         clues.push(newClue);
                         for (let letter = 0; letter < word.length; letter++) {
                             squares[row][col + letter]["acrossclue"] = clues.length - 1;
@@ -222,8 +221,7 @@ class PuzzleBuilder extends React.Component {
                     } else {
                         // create new clue and assign it
                         let answer = characters.join("");
-                        let newClue = this.createClueObject(false, [row, col], answer,
-                                                            clues.length);
+                        let newClue = this.createClueObject(false, [row, col], answer);
                         clues.push(newClue);
                         for (let letter = 0; letter < word.length; letter++) {
                             squares[row+letter][col]["downclue"] = clues.length - 1;
@@ -273,7 +271,8 @@ class PuzzleBuilder extends React.Component {
     setClueNumbers() {
         // find squares that are the beginnings of words
         // and number them correctly
-
+        // also number the Clue objects
+        let clues = this.state.puzzle.puzzle;
         let squares = this.state.squares;
         let clue_counter = 1;
         
@@ -289,6 +288,8 @@ class PuzzleBuilder extends React.Component {
                             && !squares[row+1][col]["off"]) {
                         square["cluenumber"] = clue_counter;
                         increment = true;
+                        // assign clue number
+                        clues[square["downclue"]]["number"] = clue_counter;
                     }
 
                     // if square to left is off and right is on
@@ -297,6 +298,8 @@ class PuzzleBuilder extends React.Component {
                             && !squares[row][col+1]["off"]) {
                         square["cluenumber"] = clue_counter;
                         increment = true;
+                        // assign clue number
+                        clues[square["acrossclue"]]["number"] = clue_counter;
                     }
 
                     if (increment) {
@@ -326,13 +329,14 @@ class PuzzleBuilder extends React.Component {
         let across = this.state.across;
         let focus = this.state.focus;
         let activeClue = this.state.activeClue;
+        let clues = this.state.puzzle.puzzle;
 
         if ((focus[0] === j) && (focus[1] === i)) {
             across = !across;
         }        
 
         let clue = this.getCurrentClue(j, i, across);
-        activeClue = (clue ? clue["number"] : null);
+        activeClue = (clue ? clues.indexOf(clue) : null);
 
         this.setState({"focus": [j, i],
                        "activeClue": activeClue,
@@ -406,8 +410,9 @@ class PuzzleBuilder extends React.Component {
 
         let activeClue = this.state.activeClue;
         let clue = this.getCurrentClue(nextfocus[0], nextfocus[1], nextacross);
+        let clues = this.state.puzzle.puzzle;
 
-        activeClue = (clue ? clue["number"] : activeClue);
+        activeClue = (clue ? clues.indexOf(clue) : null);
 
         this.setState({"focus": nextfocus,
                        "across": nextacross,
@@ -440,6 +445,22 @@ class PuzzleBuilder extends React.Component {
                        cluenumber={square["cluenumber"]}
                        onClick={() => this.handleClick(j, i)}
                />;
+    }
+
+    renderClue() {
+        let focus = this.state["focus"];
+        let across = this.state["across"];
+        let clue = this.getCurrentClue(focus[0], focus[1], across);
+        let cluenumber = "";
+        let cluetext = "";
+
+        if (clue) {
+            let direction = across ? "A" : "D";
+            cluetext = clue["clue"];
+            cluenumber = clue["number"] + direction + ". ";
+            return <EditableClue text={cluenumber + cluetext} />
+        }
+        return <Clue text="&#9786;&#9787;&#9786;&#9787;" />
     }
 
     validatePuzzle(puzzle) {
@@ -566,6 +587,9 @@ class PuzzleBuilder extends React.Component {
                             <ExpanderButton text="&#8681;" onClick={(event) => {this.expandPuzzle("bottom")}} orient="horiz" />
                         </div>
                         <div className="table-cell"></div>
+                    </div>
+                    <div>
+                        {this.renderClue()}
                     </div>
 
                 </div>

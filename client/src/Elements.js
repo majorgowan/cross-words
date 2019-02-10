@@ -41,6 +41,12 @@ function Clue(props) {
     );
 }
 
+function EditableClue(props) {
+    return (
+        <input id="clue-text" value={props.text}/>
+    );
+}
+
 function PuzzleName(props) {
     return (
         <div className="title-block">
@@ -50,4 +56,5 @@ function PuzzleName(props) {
     );
 }
 
-export { Square, GeneralButton, ExpanderButton, Clue, PuzzleName };
+export { Square, GeneralButton, ExpanderButton,
+         Clue, EditableClue, PuzzleName };
