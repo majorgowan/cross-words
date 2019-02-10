@@ -126,7 +126,7 @@ ol, ul {
 .vert-button {
     width: 55px;
     height: 80px;
-    font-size: 40px;
+    font-size: 48px;
     text-align: center;
 }
 
@@ -200,4 +200,9 @@ path {
 #clue-text {
     font-size: 23px;
     font-weight: normal;
+}
+
+#modal-root {
+    position: relative;
+    z-index: 999;
 }

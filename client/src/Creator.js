@@ -1,21 +1,8 @@
 import React from 'react';
 import { Square, GeneralButton, ExpanderButton, 
          Clue, PuzzleName } from './Elements.js';
+import { Modal } from './Modals.js';
 
-//     {
-//     "title": "puzzle title",
-//     "author": "puzzle author",
-//     "date": "2019-02-09",
-//     "puzzle": [
-//          {
-//              "clue": "clue text",
-//              "answer": "CLUE ANSWER",
-//              "across": true,
-//              "start": [ 0, 0 ]
-//          },
-//          ...
-//          ]
-//      }
 
 class PuzzleBuilder extends React.Component {
     constructor(props) {
@@ -40,7 +27,6 @@ class PuzzleBuilder extends React.Component {
         return {
             "title": "puzzle title",
             "author": "puzzle author",
-            "date": "2019-02-09",
             "puzzle": [] 
         }
     }
@@ -455,13 +441,52 @@ class PuzzleBuilder extends React.Component {
                />;
     }
 
+    validatePuzzle(puzzle) {
+        // TODO: check for blank squares and missing clues
+        return true;
+    }
+
     sendPuzzle() {
         console.log("Going to send puzzle!");
+        
+        // generate current date string
+        let today = new Date();
+        let yyyy = ("" + today.getFullYear());
+        let mm = ("" + 1 + today.getMonth()).padStart(2, "0");
+        let dd = ("" + today.getDate()).padStart(2, "0");
+        let date = yyyy + "-" + mm + "-" + dd;
+
+        // build puzzle object
+        let puzzleObj = {"title": this.state.puzzle.title,
+                         "author": this.state.puzzle.author,
+                         "date": date}
+        let statepuzzle = this.state.puzzle.puzzle;
+        // check for empty first row(s) or columns(s)
+        let minrow = Math.min(...statepuzzle.map(clue => {return clue.start[0];}));
+        let mincol = Math.min(...statepuzzle.map(clue => {return clue.start[1];}));
+        console.log(minrow, mincol);
+
+        let puzzle = [];
+        for (let ii = 0; ii < statepuzzle.length; ii++) {
+            if (statepuzzle[ii]) {
+                // shift starts if applicable
+                let start = [statepuzzle[ii]["start"][0] - minrow,
+                             statepuzzle[ii]["start"][1] - mincol];
+
+                puzzle.push({"clue": statepuzzle[ii].clue,
+                             "answer": statepuzzle[ii].answer,
+                             "across": statepuzzle[ii].across,
+                             "start": start});
+            }
+        }
+
+        puzzleObj["puzzle"] = puzzle;
+        
         fetch("api/sendpuzzle",
                 {
                     method: "POST",
                     mode: "cors",
-                    body: JSON.stringify(this.props.puzzle),
+                    body: JSON.stringify(puzzleObj),
                     headers: {
                         "Content-Type": "application/json"
                     }

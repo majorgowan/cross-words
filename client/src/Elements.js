@@ -35,7 +35,6 @@ function ExpanderButton(props) {
     );
 }
 
-
 function Clue(props) {
     return (
         <h3 id="clue-text">{props.text}</h3>
