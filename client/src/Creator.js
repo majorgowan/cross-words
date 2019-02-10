@@ -19,7 +19,8 @@ class PuzzleBuilder extends React.Component {
             "squares": squares,
             "focus": focus,
             "activeClue": activeClue,
-            "across": across
+            "across": across,
+            "showDialog": false
         };
     }
 
@@ -502,7 +503,28 @@ class PuzzleBuilder extends React.Component {
             );
     }
 
+    showDialog() {
+        this.setState({"showDialog": true});
+    }
+
+    hideDialog() {
+        this.setState({"showDialog": false});
+    }
+
     render() {
+
+        const modal = this.state.showDialog ? (
+                <Modal>
+                    <div className="modal">
+                        <div>
+                            <p>Hello!  This is a Dialog!!!</p>
+                        </div>
+                        <GeneralButton text="Hide Me :-("
+                                       onClick={() => this.hideDialog()} />
+                    </div>
+                </Modal>
+            ) : null;
+
         let board_width_style = {"width": 40*this.state.squares[0].length + 150};
 
         return (
@@ -555,8 +577,11 @@ class PuzzleBuilder extends React.Component {
                                    onClick={this.props.onMainMenuButtonClick} />
                     <GeneralButton text="Send Puzzle"
                                    onClick={() => this.sendPuzzle()} />
+                    <GeneralButton text="Show Dialog!"
+                                   onClick={() => this.showDialog()} />
                 </div>
 
+                {modal}
             </div>
         );
     }
