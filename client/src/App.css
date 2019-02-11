@@ -118,15 +118,15 @@ ol, ul {
 
 .horiz-button {
     width: 80px;
-    height: 55px;
-    font-size: 40px;
+    height: 35px;
+    font-size: 20px;
     text-align: center;
 }
 
 .vert-button {
-    width: 55px;
+    width: 35px;
     height: 80px;
-    font-size: 48px;
+    font-size: 20px;
     text-align: center;
 }
 
@@ -197,9 +197,30 @@ path {
     font-size: 19px;
 }
 
-#clue-text {
+.clue-wrapper {
+    display: flex;
+    text-align: center;
+    margin: auto;
+    height: 50px;
+    width: 100%;
+}
+
+.clue-text {
     font-size: 23px;
     font-weight: normal;
+    display: inline-block;
+    margin: 10px auto;
+}
+
+.clue-label {
+    width: 60px;
+    display: inline-block;
+}
+
+.editable-clue {
+    background-color: rgba(0,0,0,0);
+    display: inline-block;
+    width: calc(100% - 60px);
 }
 
 #modal-root {
@@ -208,7 +229,7 @@ path {
 }
 
 .modal {
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0,0,0,0.7);
     position: fixed;
     height: 100%;
     width: 100%;

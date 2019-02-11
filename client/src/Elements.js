@@ -37,13 +37,7 @@ function ExpanderButton(props) {
 
 function Clue(props) {
     return (
-        <h3 id="clue-text">{props.text}</h3>
-    );
-}
-
-function EditableClue(props) {
-    return (
-        <input id="clue-text" value={props.text}/>
+        <h3 className="clue-text">{props.text}</h3>
     );
 }
 
@@ -54,6 +48,29 @@ function PuzzleName(props) {
             <h4 className="puzzle-author">by {props.author}</h4>
         </div>
     );
+}
+
+function EditableClue(props) {
+    if (props.clue) {
+        let number = props.clue["number"];
+        let direction = props.clue["across"] ? "A" : "D";
+        let text = props.clue["clue"];
+        return (
+            <div className="clue-wrapper">
+                <span className="clue-text clue-label">{"" + number + direction + "."}</span>
+                &nbsp;
+                <input className="clue-text editable-clue"
+                       value={text}
+                       onChange={ props.onChange }/>
+            </div>
+        );
+    } else {
+        return (
+            <div className="clue-wrapper">
+                <Clue text="&#8195;"/>
+            </div>
+        );
+    }
 }
 
 export { Square, GeneralButton, ExpanderButton,

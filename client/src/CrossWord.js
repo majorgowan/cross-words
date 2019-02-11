@@ -309,7 +309,9 @@ class Puzzle extends React.Component {
             cluenumber = clue["number"] + direction + ". ";
         }
 
-        return <Clue text={cluenumber + cluetext} />
+        return (<div className="clue-wrapper">
+                    <Clue text={cluenumber + cluetext} />
+                </div>)
     }
 
     checkAnswers() {
