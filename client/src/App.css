@@ -91,6 +91,10 @@ ol, ul {
     display: inline-block;
 }
 
+.narrow-board {
+    width: 310px;
+}
+
 .side-panel {
     width: 100px;
     display: inline-block;
