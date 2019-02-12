@@ -338,7 +338,8 @@ class Puzzle extends React.Component {
                 <div className="game-board" style={board_width_style}>
                     <div>
                         <PuzzleName title={this.props.puzzle.title}
-                                    author={this.props.puzzle.author}/>
+                                    author={this.props.puzzle.author}
+                                    onClick={null}/>
                     </div>
                     <div onKeyDown={(event) => this.handleKeyPress(event)}>
                     {this.state.squares.map((row, j) => {

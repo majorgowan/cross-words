@@ -44,7 +44,7 @@ function Clue(props) {
 function PuzzleName(props) {
     return (
         <div className="title-block">
-            <h2 className="puzzle-title">{props.title}</h2>
+            <h2 className="puzzle-title" onClick={props.onClick}>{props.title}</h2>
             <h4 className="puzzle-author">by {props.author}</h4>
         </div>
     );
@@ -58,7 +58,6 @@ function EditableClue(props) {
         return (
             <div className="clue-wrapper">
                 <span className="clue-text clue-label">{"" + number + direction + "."}</span>
-                &nbsp;
                 <input className="clue-text editable-clue"
                        value={text}
                        onChange={ props.onChange }/>
@@ -73,5 +72,30 @@ function EditableClue(props) {
     }
 }
 
+function TitleAuthorSetter(props) {
+    return (
+        <div className="modal">
+            <div className="dialog-wrapper">
+                <div className="dialog-row">
+                    <span className="dialog-label">Title:</span>
+                    <input className="setter-input"
+                           value={props.title}
+                           onChange={ props.onTitleChange } />
+                </div>
+                <div className="dialog-row">
+                    <span className="dialog-label">Author:</span>
+                    <input className="setter-input author-input"
+                           value={props.author}
+                           onChange={ props.onAuthorChange } />
+                </div>
+                    <div className="exit-button-wrapper">
+                        <GeneralButton text="Ok" onClick={props.onExitButtonClick}/>
+                    </div>
+            </div>
+        </div>
+    )
+}
+
 export { Square, GeneralButton, ExpanderButton,
-         Clue, EditableClue, PuzzleName };
+         Clue, EditableClue, PuzzleName,
+         TitleAuthorSetter };

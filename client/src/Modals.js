@@ -27,10 +27,10 @@ class Modal extends React.Component {
     render() {
         // Use a portal to render the children into the element
         return ReactDOM.createPortal(
-                // Any valid React child: JSX, strings, arrays, etc.
-                this.props.children,
-                // A DOM element
-                this.el,
+                    // Any valid React child: JSX, strings, arrays, etc.
+                    this.props.children,
+                    // A DOM element
+                    this.el,
                 );
     }
 }

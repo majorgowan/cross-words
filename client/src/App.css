@@ -114,6 +114,7 @@ ol, ul {
     cursor: pointer;
     margin: 10px 10px;
     color: #464;
+    display: inline-block;
 }
 
 .horiz-button {
@@ -184,9 +185,6 @@ path {
                         
 .puzzle-title {
     color: #444;
-}
-
-.puzzle-title-item {
     cursor: pointer;
 }
 
@@ -214,6 +212,7 @@ path {
 
 .clue-label {
     width: 60px;
+    padding: 0 10px 0 0;
     display: inline-block;
 }
 
@@ -223,6 +222,8 @@ path {
     width: calc(100% - 60px);
 }
 
+
+/* modals (dialogs) */
 #modal-root {
     position: relative;
     z-index: 999;
@@ -239,3 +240,45 @@ path {
     align-items: center;
     justify-content: center;
 }
+
+.dialog-wrapper {
+    background: #bcb;
+    width: 440px;
+    height: 220px;
+    border: outset #9a9;
+    padding: 40px;
+}
+
+.dialog-row {
+    display: table-row;
+}
+
+.dialog-label {
+    width: 40px;
+    display: table-cell;
+    font-size: 18px;
+    text-align: right;
+    padding: 0 10px 0 0;
+}
+
+.setter-input {
+    width: calc(95% - 40px);
+    height: 34px;
+    background: #ded;
+    display: table-cell;
+    text-align: left;
+    font-size: 18px;
+    margin: 7px;
+    padding: 0 10px;
+} 
+
+.author-input {
+    font-family: 'Covered By Your Grace';
+    font-style: cursive;
+}
+
+.exit-button-wrapper {
+    padding: 30px 5px 5px 0;
+    float: right;
+}
+

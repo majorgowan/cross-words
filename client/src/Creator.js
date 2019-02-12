@@ -1,6 +1,7 @@
 import React from 'react';
 import { Square, GeneralButton, ExpanderButton, 
-         EditableClue, PuzzleName } from './Elements.js';
+         EditableClue, PuzzleName,
+         TitleAuthorSetter } from './Elements.js';
 import { Modal } from './Modals.js';
 
 
@@ -16,7 +17,7 @@ class PuzzleBuilder extends React.Component {
             "focus": [0, 0],
             "activeClue": null,
             "across": true,
-            "showDialog": false,
+            "activeDialog": null
         };
     }
 
@@ -509,27 +510,37 @@ class PuzzleBuilder extends React.Component {
             );
     }
 
-    showDialog() {
-        this.setState({"showDialog": true});
+    showTADialog() {
+        this.setState({"activeDialog": "TitleAuthorSetter"});
     }
-
-    hideDialog() {
-        this.setState({"showDialog": false});
+    onTitleChange(event) {
+        event.preventDefault();
+        let puzzle = this.state.puzzle;
+        puzzle["title"] = event.target.value;
+        this.setState({"puzzle": puzzle});
+    }
+    onAuthorChange(event) {
+        event.preventDefault();
+        let puzzle = this.state.puzzle;
+        puzzle["author"] = event.target.value;
+        this.setState({"puzzle": puzzle});
+    }
+    onTAExitButtonClick() {
+        this.setState({"activeDialog": null});
     }
 
     render() {
-
-        const modal = this.state.showDialog ? (
-                <Modal>
-                    <div className="modal">
-                        <div>
-                            <p>Hello!  This is a Dialog!!!</p>
-                        </div>
-                        <GeneralButton text="Hide Me :-("
-                                       onClick={() => this.hideDialog()} />
-                    </div>
-                </Modal>
-            ) : null;
+        let modal = null;
+        if (this.state.activeDialog === "TitleAuthorSetter") {
+            modal = ( <Modal>
+                          <TitleAuthorSetter 
+                              title={this.state.puzzle["title"]}
+                              author={this.state.puzzle["author"]}
+                              onTitleChange={(event) => this.onTitleChange(event)}
+                              onAuthorChange={(event) => this.onAuthorChange(event)}
+                              onExitButtonClick={() => this.onTAExitButtonClick()}/>
+                      </Modal> )
+        }
 
         let board_width_style = {"width": 40*this.state.squares[0].length + 110};
 
@@ -541,7 +552,8 @@ class PuzzleBuilder extends React.Component {
                 <div className="game-board" style={board_width_style}>
                     <div>
                         <PuzzleName title={this.state.puzzle.title}
-                                    author={this.state.puzzle.author}/>
+                                    author={this.state.puzzle.author}
+                                    onClick={() => this.showTADialog()} />
                     </div>
 
                     <div className="table-row">
@@ -588,10 +600,8 @@ class PuzzleBuilder extends React.Component {
                 <div className="horiz-button-panel">
                     <GeneralButton text="Main Menu"
                                    onClick={this.props.onMainMenuButtonClick} />
-                    <GeneralButton text="Send Puzzle"
+                    <GeneralButton text="Submit Puzzle"
                                    onClick={() => this.sendPuzzle()} />
-                    <GeneralButton text="Show Dialog!"
-                                   onClick={() => this.showDialog()} />
                 </div>
 
                 {modal}
