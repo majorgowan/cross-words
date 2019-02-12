@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import CrossWord from './CrossWord.js';
 import Creator from './Creator.js';
+import { GeneralButton } from './Elements.js';
 import PuzzlePicker from './PuzzlePicker.js';
 import './App.css';
 
@@ -9,7 +10,8 @@ class App extends Component {
         super(props);
         this.state = {
             "puzzlelist": [],
-            "puzzle": null
+            "puzzle": null,
+            "createMode": false
         };
     }
 
@@ -45,22 +47,29 @@ class App extends Component {
 
     onMainMenuClick() {
         // listener for back-to-main-menu button
-        this.setState({"puzzle": null});
+        this.setState({ "puzzle": null,
+                        "createMode": false });
     }
 
     render() {
-        if (this.state.puzzle) {
+        if (this.state.createMode) {
             return (
                     <Creator onMainMenuButtonClick={() => this.onMainMenuClick()} />
                    );
+        } else if (this.state.puzzle) {
             return (
                     <CrossWord puzzle={this.state.puzzle}
                                onMainMenuButtonClick={() => this.onMainMenuClick()} />
                    );
         } else if (this.state.puzzlelist) {
-            return (
-                    <PuzzlePicker puzzlelist={this.state.puzzlelist}
-                                  onClick={event => this.onPuzzleItemClick(event)} />
+            return (<div>
+                        <PuzzlePicker puzzlelist={this.state.puzzlelist}
+                                      onClick={event => this.onPuzzleItemClick(event)} />
+                        <div className="horiz-button-panel">
+                            <GeneralButton text="Create A Puzzle!"
+                                           onClick={event => this.setState({"createMode": true})} />                                
+                        </div>
+                    </div>
                    );
         } else {
             return ( <div></div> );

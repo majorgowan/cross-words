@@ -68,7 +68,7 @@ class Puzzle extends React.Component {
             "acrossclues": acrossclues,
             "focus": focus,
             "activeClue": activeClue,
-            "across": across, 
+            "across": across 
         };
     }
 
@@ -99,7 +99,7 @@ class Puzzle extends React.Component {
                     "acrossclue": null,
                     "downclue": null,
                     "correct": null,
-                    "wrong": null,
+                    "wrong": null
                 };
             }
         }
@@ -159,8 +159,7 @@ class Puzzle extends React.Component {
         let clue = this.getCurrentClue(j, i, across);
         activeClue =  (clue ? clue["number"] : activeClue);
 
-        this.setState({"squares": squares,
-                       "focus": [j, i],
+        this.setState({"focus": [j, i],
                        "activeClue": activeClue,
                        "across": across,
         });
@@ -191,21 +190,25 @@ class Puzzle extends React.Component {
                 }
             }
         } else if (keyPressed === "ARROWLEFT") {
+            event.preventDefault();
             if (across) {
                 nextfocus[1] = Math.max(0, focus[1] - 1);
             }
             nextacross = true;
         } else if (keyPressed === "ARROWRIGHT") {
+            event.preventDefault();
             if (across) {
                 nextfocus[1] = Math.min(ncols - 1, focus[1] + 1);
             }
             nextacross = true;
         } else if (keyPressed === "ARROWUP") {
+            event.preventDefault();
             if (!across) {
                 nextfocus[0] = Math.max(0, focus[0] - 1);
             }
             nextacross = false;
         } else if (keyPressed === "ARROWDOWN") {
+            event.preventDefault();
             if (!across) {
                 nextfocus[0] = Math.min(nrows - 1, focus[0] + 1);
             }
@@ -241,7 +244,7 @@ class Puzzle extends React.Component {
         this.setState({"focus": focus,
                        "across": across,
                        "squares": squares,
-                       "activeClue": activeClue,
+                       "activeClue": activeClue
         });
     }
 
@@ -306,7 +309,9 @@ class Puzzle extends React.Component {
             cluenumber = clue["number"] + direction + ". ";
         }
 
-        return <Clue text={cluenumber + cluetext} />
+        return (<div className="clue-wrapper">
+                    <Clue text={cluenumber + cluetext} />
+                </div>)
     }
 
     checkAnswers() {
@@ -325,13 +330,16 @@ class Puzzle extends React.Component {
     }
 
     render() {
+        let board_width_style = {"width": 40*this.state.squares[0].length + 150};
+        
         return (
             <div className="main-block">
                 <div className="side-panel"></div>
-                <div className="game-board">
+                <div className="game-board" style={board_width_style}>
                     <div>
                         <PuzzleName title={this.props.puzzle.title}
-                                    author={this.props.puzzle.author}/>
+                                    author={this.props.puzzle.author}
+                                    onClick={null}/>
                     </div>
                     <div onKeyDown={(event) => this.handleKeyPress(event)}>
                     {this.state.squares.map((row, j) => {
@@ -344,11 +352,12 @@ class Puzzle extends React.Component {
                         {this.renderClue()}
                     </div>
                 </div>
-                <div className="side-panel">
-                    <GeneralButton text="Check Answers!"
-                                   onClick={() => this.checkAnswers()} />
+                <div className="side-panel"></div>
+                <div className="horiz-button-panel">
                     <GeneralButton text="Main Menu"
                                    onClick={this.props.onMainMenuButtonClick} />
+                    <GeneralButton text="Check Answers!"
+                                   onClick={() => this.checkAnswers()} />
                 </div>
             </div>
         );
