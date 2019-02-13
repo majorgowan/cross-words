@@ -1,7 +1,8 @@
 import React from 'react';
 import { Square, GeneralButton, ExpanderButton, 
          EditableClue, PuzzleName,
-         TitleAuthorSetter } from './Elements.js';
+         TitleAuthorSetter,
+         ClueListViewer } from './Elements.js';
 import { Modal } from './Modals.js';
 
 
@@ -525,8 +526,21 @@ class PuzzleBuilder extends React.Component {
         puzzle["author"] = event.target.value;
         this.setState({"puzzle": puzzle});
     }
-    onTAExitButtonClick() {
+    onDialogExitButtonClick() {
         this.setState({"activeDialog": null});
+    }
+
+    showListView() {
+        this.setState({"activeDialog": "ClueListViewer"});
+    }
+    onClueInListChange(event, clue) {
+        event.preventDefault();
+
+        let puzzle = this.state.puzzle;
+        clue["clue"] = event.target.value;
+        
+        this.setState({"puzzle": puzzle,
+                       "activeClue": clue});
     }
 
     render() {
@@ -538,8 +552,14 @@ class PuzzleBuilder extends React.Component {
                               author={this.state.puzzle["author"]}
                               onTitleChange={(event) => this.onTitleChange(event)}
                               onAuthorChange={(event) => this.onAuthorChange(event)}
-                              onExitButtonClick={() => this.onTAExitButtonClick()}/>
+                              onExitButtonClick={() => this.onDialogExitButtonClick()}/>
                       </Modal> )
+        } else if (this.state.activeDialog === "ClueListViewer") {
+            modal = ( <Modal>
+                          <ClueListViewer
+                              puzzle={this.state.puzzle.puzzle}
+                              onExitButtonClick={() => this.onDialogExitButtonClick()} />
+                      </Modal> )                    
         }
 
         let board_width_style = {"width": 40*this.state.squares[0].length + 110};
@@ -600,6 +620,8 @@ class PuzzleBuilder extends React.Component {
                 <div className="horiz-button-panel">
                     <GeneralButton text="Main Menu"
                                    onClick={this.props.onMainMenuButtonClick} />
+                    <GeneralButton text="List View"
+                                   onClick={() => this.showListView()} />
                     <GeneralButton text="Submit Puzzle"
                                    onClick={() => this.sendPuzzle()} />
                 </div>

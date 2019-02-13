@@ -91,10 +91,6 @@ ol, ul {
     display: inline-block;
 }
 
-.narrow-board {
-    width: 310px;
-}
-
 .side-panel {
     width: 100px;
     display: inline-block;
@@ -106,19 +102,21 @@ ol, ul {
     text-align: center;
     width: 80%;
     background: #afbfaf;
-    margin: 50px auto;
+    margin: 20px auto;
     border-radius: 20px;
+    display: block;
 }
 
 .general-button {
     background: #aca;
-    width: 98px;
+    width: 100px;
     height: 60px;
     font-size:18px;
     cursor: pointer;
     margin: 10px 10px;
     color: #464;
     display: inline-block;
+    vertical-align: top;
 }
 
 .horiz-button {
@@ -202,30 +200,35 @@ path {
 .clue-wrapper {
     display: flex;
     text-align: center;
+    padding: 10px 0;
     margin: auto;
-    height: 50px;
     width: 100%;
 }
 
 .clue-text {
+    display: inline-block;
+    padding: 7px 10px;
     font-size: 23px;
     font-weight: normal;
-    display: inline-block;
-    margin: 10px auto;
+    width: 100%;
+    text-align: center;
 }
 
 .clue-label {
-    width: 60px;
-    padding: 0 10px 0 0;
+    width: 40px;
     display: inline-block;
+    padding-top: 10px;
+    text-align: right;
 }
 
 .editable-clue {
     background-color: rgba(0,0,0,0);
     display: inline-block;
-    width: calc(100% - 60px);
+    width: calc(100% - 50px);
+    margin-left: 5px;
+    padding-top: 5px;
+    text-align: left;
 }
-
 
 /* modals (dialogs) */
 #modal-root {
@@ -251,6 +254,11 @@ path {
     height: 220px;
     border: outset #9a9;
     padding: 40px;
+    overflow-y: scroll;
+}
+
+.clue-list-wrapper {
+    height: 300px;
 }
 
 .dialog-row {
