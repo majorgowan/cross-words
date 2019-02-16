@@ -96,6 +96,33 @@ function TitleAuthorSetter(props) {
     )
 }
 
+function Alert(props) {
+    return (
+        <div className="modal">
+            <div className="dialog-wrapper">
+                <div>{props.message}</div>
+                <div className="exit-button-wrapper">
+                    <GeneralButton text="Ok" onClick={props.onExitButtonClick}/>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+function Confirm(props) {
+    return (
+        <div className="modal">
+            <div className="dialog-wrapper">
+                <div>{props.message}</div>
+                <div className="exit-button-wrapper">
+                    <GeneralButton text="Ok" onClick={props.onExitButtonClick}/>
+                    <GeneralButton text="Cancel" onClick={props.onExitButtonClick}/>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 class ClueListViewer extends React.Component {
     constructor(props) {
         super(props);
@@ -136,4 +163,5 @@ class ClueListViewer extends React.Component {
 
 export { Square, GeneralButton, ExpanderButton,
          Clue, EditableClue, PuzzleName,
-         TitleAuthorSetter, ClueListViewer };
+         TitleAuthorSetter, ClueListViewer,
+         Alert, Confirm };

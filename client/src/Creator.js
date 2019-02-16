@@ -2,7 +2,7 @@ import React from 'react';
 import { Square, GeneralButton, ExpanderButton, 
          EditableClue, PuzzleName,
          TitleAuthorSetter,
-         ClueListViewer } from './Elements.js';
+         ClueListViewer, Alert, Confirm } from './Elements.js';
 import { Modal } from './Modals.js';
 
 
@@ -18,7 +18,8 @@ class PuzzleBuilder extends React.Component {
             "focus": [0, 0],
             "activeClue": null,
             "across": true,
-            "activeDialog": null
+            "activeDialog": null,
+            "alert": null
         };
     }
 
@@ -173,7 +174,7 @@ class PuzzleBuilder extends React.Component {
                     }
                     col += word.length;
 
-                    // clear acrossclue for squares on same row with winner
+                    // clear acrossclue or squares on same row with winner
                     for (let letter=col; letter < ncols; letter++) {
                         if (squares[row][letter]["acrossclue"] === winner) {
                             squares[row][letter]["acrossclue"] = null;
@@ -181,7 +182,12 @@ class PuzzleBuilder extends React.Component {
                     }
                 } else if (!squares[row][col]["off"]) {
                     squares[row][col]["acrossclue"] = null;
+                } else if (!squares[row][col+1]["off"]) {
+                    squares[row][col+1]["acrossclue"] = null;
                 }
+
+                this.pruneClues();
+
                 col++;
             }
         }
@@ -207,7 +213,7 @@ class PuzzleBuilder extends React.Component {
                         }
                     }
                     
-                    // vote on the acrossclue for this word
+                    // vote on the downclue for this word
                     let winner = this.vote(word);
 
                     // set all of them to the winning clue
@@ -227,7 +233,7 @@ class PuzzleBuilder extends React.Component {
                     }
                     row += word.length;
                     
-                    // clear acrossclue for squares on same row with winner
+                    // clear downclue for squares in same column with winner
                     for (let letter=row; letter < nrows; letter++) {
                         if (squares[letter][col]["downclue"] === winner) {
                             squares[letter][col]["downclue"] = null;
@@ -235,35 +241,62 @@ class PuzzleBuilder extends React.Component {
                     }
                 } else if (!squares[row][col]["off"]) {
                     squares[row][col]["downclue"] = null;
+                } else if (!squares[row+1][col]["off"]) {
+                    squares[row+1][col]["downclue"] = null;
                 }
+
+                this.pruneClues();
 
                 row++;
             }
         }
 
+        puzzle.puzzle = clues;
+        this.setState({"puzzle": puzzle,
+                       "squares": squares});
+    }
+
+    pruneClues() {
+        let puzzle = this.state.puzzle;
+        let clues = puzzle.puzzle;
+        let squares = this.state.squares;
+
+        let nrows = squares.length;
+        let ncols = squares[0].length;
+
         // PRUNE ANY CLUES WITH NO SQUARES!!!
         for (let iclue=0; iclue < clues.length; iclue++) {
-            let remove = true;
-            let found = 0;
-            for (let jj=0; jj<nrows*ncols; jj++) {
-                let row = Math.floor(jj / ncols);
-                let col = jj - row * ncols;
-                if ((squares[row][col]["acrossclue"] === iclue)
-                        || (squares[row][col]["downclue"] === iclue)) {
-                    found += 1;
-                    if (found > 1) {
-                        remove = false;
-                        break;
+            if (clues[iclue]) {
+                let remove = true;
+                let found = 0;
+                let first = null;
+                for (let jj=0; jj<nrows*ncols; jj++) {
+                    let row = Math.floor(jj / ncols);
+                    let col = jj - row * ncols;
+                    if ((squares[row][col]["acrossclue"] === iclue)
+                            || (squares[row][col]["downclue"] === iclue)) {
+                        found += 1;
+                        first = [row, col];
+                        if (found > 1) {
+                            remove = false;
+                            break;
+                        }
                     }
                 }
-            }
-            if (remove) {
-                clues[iclue] = null;
+                if (remove) {
+                    if (clues[iclue]["across"]) {
+                        squares[first[0]][first[1]]["acrossclue"] = null;
+                    } else {
+                        squares[first[0]][first[1]]["downclue"] = null;
+                    }
+                    clues[iclue] = null;
+                }
             }
         }
 
         puzzle.puzzle = clues;
-        this.setState({"puzzle": puzzle});
+        this.setState({"puzzle": puzzle,
+                       "squares": squares});
     }
 
     setClueNumbers() {
@@ -448,67 +481,97 @@ class PuzzleBuilder extends React.Component {
                        "activeClue": activeClue});
     }
 
-    validatePuzzle(puzzle) {
-        // TODO: check for blank squares and missing clues
-        return true;
+    invalidatePuzzle() {
+        let squares = this.state.squares;
+        let puzzle = this.state.puzzle;
+
+        // check for blank squares
+        for (let row=0; row < squares.length; row++) {
+            for (let col=0; col < squares[0].length; col++) {
+                if ((!squares[row][col]["off"]) 
+                        && (squares[row][col]["value"] === "")) {
+                    return "There are blank squares!";
+                }
+            }
+        }
+
+        // check for empty clues
+        for (let iclue=0; iclue < puzzle["puzzle"].length; iclue++) {
+            if (puzzle["puzzle"][iclue] && !puzzle["puzzle"][iclue]["clue"]) {
+                return "There are missing clues!";
+            }
+        }
+
+        // check for title "Untitled"
+        if (puzzle["title"] === "Untitled") {
+            return "Please change the title!"
+        }
+
+        return false;
     }
 
     sendPuzzle() {
         // TODO: validate before sending
-        // TODO: bring up dialog to confirm
-        console.log("Going to send puzzle!");
-        
-        // generate current date string
-        let today = new Date();
-        let yyyy = ("" + today.getFullYear());
-        let mm = ("" + 1 + today.getMonth()).padStart(2, "0");
-        let dd = ("" + today.getDate()).padStart(2, "0");
-        let date = yyyy + "-" + mm + "-" + dd;
+        let isNotValid = this.invalidatePuzzle();
 
-        // build puzzle object
-        let puzzleObj = {"title": this.state.puzzle.title,
-                         "author": this.state.puzzle.author,
-                         "date": date}
-        let statepuzzle = this.state.puzzle.puzzle;
-        // check for empty first row(s) or columns(s)
-        let minrow = Math.min(...statepuzzle.map(clue => {return clue.start[0];}));
-        let mincol = Math.min(...statepuzzle.map(clue => {return clue.start[1];}));
-        console.log(minrow, mincol);
+        if (isNotValid) {
+            this.setState({"activeDialog": "AlertDialog",
+                           "alert": isNotValid});
+        } else {
+            // TODO: bring up dialog to confirm
+            console.log("Going to send puzzle!");
+            
+            // generate current date string
+            let today = new Date();
+            let yyyy = ("" + today.getFullYear());
+            let mm = ("" + 1 + today.getMonth()).padStart(2, "0");
+            let dd = ("" + today.getDate()).padStart(2, "0");
+            let date = yyyy + "-" + mm + "-" + dd;
 
-        let puzzle = [];
-        for (let ii = 0; ii < statepuzzle.length; ii++) {
-            if (statepuzzle[ii]) {
-                // shift starts if applicable
-                let start = [statepuzzle[ii]["start"][0] - minrow,
-                             statepuzzle[ii]["start"][1] - mincol];
+            // build puzzle object
+            let puzzleObj = {"title": this.state.puzzle.title,
+                             "author": this.state.puzzle.author,
+                             "date": date}
+            let statepuzzle = this.state.puzzle.puzzle;
+            // check for empty first row(s) or columns(s)
+            let minrow = Math.min(...statepuzzle.map(clue => {return clue.start[0];}));
+            let mincol = Math.min(...statepuzzle.map(clue => {return clue.start[1];}));
 
-                puzzle.push({"clue": statepuzzle[ii].clue,
-                             "answer": statepuzzle[ii].answer,
-                             "across": statepuzzle[ii].across,
-                             "start": start});
-            }
-        }
+            let puzzle = [];
+            for (let ii = 0; ii < statepuzzle.length; ii++) {
+                if (statepuzzle[ii]) {
+                    // shift starts if applicable
+                    let start = [statepuzzle[ii]["start"][0] - minrow,
+                                 statepuzzle[ii]["start"][1] - mincol];
 
-        puzzleObj["puzzle"] = puzzle;
-        
-        fetch("api/sendpuzzle",
-                {
-                    method: "POST",
-                    mode: "cors",
-                    body: JSON.stringify(puzzleObj),
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                })
-            .then(res => res.json())
-            .then(
-                (result) => { 
-                    console.log(result);
-                },
-                (error) => {
-                    console.log("error sending puzzle");
+                    puzzle.push({"clue": statepuzzle[ii].clue,
+                                 "answer": statepuzzle[ii].answer,
+                                 "across": statepuzzle[ii].across,
+                                 "start": start});
                 }
-            );
+            }
+
+            puzzleObj["puzzle"] = puzzle;
+            
+            fetch("api/sendpuzzle",
+                    {
+                        method: "POST",
+                        mode: "cors",
+                        body: JSON.stringify(puzzleObj),
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    })
+                .then(res => res.json())
+                .then(
+                    (result) => { 
+                        console.log(result);
+                    },
+                    (error) => {
+                        console.log("error sending puzzle");
+                    }
+                );
+        }
     }
 
     showTADialog() {
@@ -560,7 +623,13 @@ class PuzzleBuilder extends React.Component {
                               puzzle={this.state.puzzle.puzzle}
                               onExitButtonClick={() => this.onDialogExitButtonClick()} />
                       </Modal> )                    
-        }
+        } else if (this.state.activeDialog === "AlertDialog") {
+            modal = ( <Modal>
+                          <Alert
+                              message={this.state.alert}
+                              onExitButtonClick={() => this.onDialogExitButtonClick()} />
+                      </Modal> )
+        }    
 
         let board_width_style = {"width": 40*this.state.squares[0].length + 110};
 
