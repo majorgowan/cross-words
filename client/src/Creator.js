@@ -517,6 +517,12 @@ class PuzzleBuilder extends React.Component {
         return false;
     }
 
+    confirmMainMenuButtonClick() {
+        this.setState({"activeDialog": "ConfirmQuitDialog",
+                       "alert": "Changes will be lost.  Really quit?"});
+    }
+
+
     presendPuzzle() {
         // TODO: validate before sending
         let isNotValid = this.invalidatePuzzle();
@@ -526,7 +532,7 @@ class PuzzleBuilder extends React.Component {
                            "alert": isNotValid});
         } else {
             // TODO: bring up dialog to confirm
-            this.setState({"activeDialog": "ConfirmDialog",
+            this.setState({"activeDialog": "ConfirmSubmitDialog",
                            "alert": "Really submit?"})
         }
     }
@@ -613,7 +619,8 @@ class PuzzleBuilder extends React.Component {
             puzzle["author"] = this.state.defaultAuthor;
         }
         this.setState({"puzzle": puzzle,
-                       "activeDialog": null});
+                       "activeDialog": null,
+                       "alert": null});
     }
 
     showListView() {
@@ -652,13 +659,22 @@ class PuzzleBuilder extends React.Component {
                               message={this.state.alert}
                               onExitButtonClick={() => this.onDialogExitButtonClick()} />
                       </Modal> )
-        } else if (this.state.activeDialog === "ConfirmDialog") {
+        } else if (this.state.activeDialog === "ConfirmSubmitDialog") {
             modal = ( <Modal>
                           <Confirm
-                              message="Really send puzzle?"
+                              message={this.state.alert}
                               onOkButtonClick={() => {
                                         this.sendPuzzle();
                                         this.onDialogExitButtonClick();
+                                        }}
+                              onCancelButtonClick={() => this.onDialogExitButtonClick()} />
+                      </Modal> )
+        } else if (this.state.activeDialog === "ConfirmQuitDialog") {
+            modal = ( <Modal>
+                          <Confirm
+                              message={this.state.alert}
+                              onOkButtonClick={() => {
+                                        this.props.onMainMenuButtonClick();
                                         }}
                               onCancelButtonClick={() => this.onDialogExitButtonClick()} />
                       </Modal> )
@@ -721,7 +737,7 @@ class PuzzleBuilder extends React.Component {
 
                 <div className="horiz-button-panel">
                     <GeneralButton text="Main Menu"
-                                   onClick={this.props.onMainMenuButtonClick} />
+                                   onClick={() => this.confirmMainMenuButtonClick()} />
                     <GeneralButton text="List View"
                                    onClick={() => this.showListView()} />
                     <GeneralButton text="Submit Puzzle"
