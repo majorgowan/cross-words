@@ -328,8 +328,8 @@ class Puzzle extends React.Component {
     }
 
     render() {
-        let board_width_style = {"width": 40*this.state.squares[0].length + 150};
-        
+        let board_width_style = {"width": 40*this.state.squares[0].length + 110};
+
         return (
             <div className="main-block">
                 <div className="side-panel"></div>

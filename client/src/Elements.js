@@ -100,7 +100,7 @@ function Alert(props) {
     return (
         <div className="modal">
             <div className="dialog-wrapper">
-                <div>{props.message}</div>
+                <div className="dialog-message">{props.message}</div>
                 <div className="exit-button-wrapper">
                     <GeneralButton text="Ok" onClick={props.onExitButtonClick}/>
                 </div>
@@ -113,10 +113,10 @@ function Confirm(props) {
     return (
         <div className="modal">
             <div className="dialog-wrapper">
-                <div>{props.message}</div>
+                <div className="dialog-message">{props.message}</div>
                 <div className="exit-button-wrapper">
-                    <GeneralButton text="Ok" onClick={props.onExitButtonClick}/>
-                    <GeneralButton text="Cancel" onClick={props.onExitButtonClick}/>
+                    <GeneralButton text="Ok" onClick={props.onOkButtonClick}/>
+                    <GeneralButton text="Cancel" onClick={props.onCancelButtonClick}/>
                 </div>
             </div>
         </div>
@@ -136,29 +136,35 @@ class ClueListViewer extends React.Component {
     }
 
     render() {
+        let bodyClass = "clue-list-wrapper";
+        if (this.state.puzzle.length > 5) {
+            bodyClass += " dialog-scrollable";
+        }
         return (
-        <div className="modal">
-            <div className="dialog-wrapper clue-list-wrapper">
-                {  this.state.puzzle.map((clue, ii) => {
-                       if (clue) { 
-                       return (
-                               <div key={ii} className="dialog-row">
-                                    <span className="dialog-label">{clue["answer"]}</span>
-                                    <input className="setter-input"
-                                           value={clue["clue"]}
-                                           onChange={(event) => this.onClueChange(event, clue)} />
-                               </div> );
-                        } else {
-                            return null;
+            <div className="modal">
+                <div className="dialog-wrapper clue-list-dialog">
+                    <div className={bodyClass}>
+                        {  this.state.puzzle.map((clue, ii) => {
+                               if (clue) {
+                               return (
+                                       <div key={ii} className="dialog-row">
+                                            <span className="dialog-label">{clue["answer"]}</span>
+                                            <input className="setter-input"
+                                                   value={clue["clue"]}
+                                                   onChange={(event) => this.onClueChange(event, clue)} />
+                                       </div> );
+                                } else {
+                                    return null;
+                                }
+                            })
                         }
-                    })
-                }
-                <div className="exit-button-wrapper">
-                    <GeneralButton text="Ok" onClick={this.props.onExitButtonClick}/>
+                    </div>
+                    <div className="exit-button-wrapper">
+                        <GeneralButton text="Ok" onClick={this.props.onExitButtonClick}/>
+                    </div>
                 </div>
             </div>
-        </div>
-    )};
+        )};
 }
 
 export { Square, GeneralButton, ExpanderButton,

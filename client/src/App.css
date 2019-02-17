@@ -250,11 +250,26 @@ path {
 
 .dialog-wrapper {
     background: #bcb;
-    width: 440px;
-    height: 220px;
+    width: 340px;
+    height: 150px;
     border: outset #9a9;
     padding: 40px;
+    position: relative;
+}
+
+.dialog-scrollable {
     overflow-y: scroll;
+}
+
+.dialog-message {
+    width: 100%;
+    text-align: center;
+    font-size: 24px;
+}
+
+.clue-list-dialog {
+    height: 400px;
+    width: 440px;
 }
 
 .clue-list-wrapper {
@@ -266,7 +281,7 @@ path {
 }
 
 .dialog-label {
-    width: 40px;
+    width: 50px;
     display: table-cell;
     font-size: 18px;
     text-align: right;
@@ -274,7 +289,7 @@ path {
 }
 
 .setter-input {
-    width: calc(95% - 40px);
+    width: calc(98% - 20px);
     height: 34px;
     background: #ded;
     display: table-cell;
@@ -291,6 +306,8 @@ path {
 
 .exit-button-wrapper {
     padding: 30px 5px 5px 0;
-    float: right;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
 }
 

@@ -19,7 +19,9 @@ class PuzzleBuilder extends React.Component {
             "activeClue": null,
             "across": true,
             "activeDialog": null,
-            "alert": null
+            "alert": null,
+            "defaultTitle": "Untitled",
+            "defaultAuthor": "Anon E. Mouse"
         };
     }
 
@@ -284,9 +286,9 @@ class PuzzleBuilder extends React.Component {
                     }
                 }
                 if (remove) {
-                    if (clues[iclue]["across"]) {
+                    if (clues[iclue]["across"] && first) {
                         squares[first[0]][first[1]]["acrossclue"] = null;
-                    } else {
+                    } else if (first) {
                         squares[first[0]][first[1]]["downclue"] = null;
                     }
                     clues[iclue] = null;
@@ -485,6 +487,11 @@ class PuzzleBuilder extends React.Component {
         let squares = this.state.squares;
         let puzzle = this.state.puzzle;
 
+        // check for non-null clues
+        if (!(puzzle.puzzle.filter(x => x).length)) {
+            return "I literally have no words!";
+        }
+
         // check for blank squares
         for (let row=0; row < squares.length; row++) {
             for (let col=0; col < squares[0].length; col++) {
@@ -503,14 +510,14 @@ class PuzzleBuilder extends React.Component {
         }
 
         // check for title "Untitled"
-        if (puzzle["title"] === "Untitled") {
+        if (puzzle["title"] === "Untitled" || !puzzle["title"]) {
             return "Please change the title!"
         }
 
         return false;
     }
 
-    sendPuzzle() {
+    presendPuzzle() {
         // TODO: validate before sending
         let isNotValid = this.invalidatePuzzle();
 
@@ -519,63 +526,71 @@ class PuzzleBuilder extends React.Component {
                            "alert": isNotValid});
         } else {
             // TODO: bring up dialog to confirm
-            console.log("Going to send puzzle!");
-            
-            // generate current date string
-            let today = new Date();
-            let yyyy = ("" + today.getFullYear());
-            let mm = ("" + 1 + today.getMonth()).padStart(2, "0");
-            let dd = ("" + today.getDate()).padStart(2, "0");
-            let date = yyyy + "-" + mm + "-" + dd;
-
-            // build puzzle object
-            let puzzleObj = {"title": this.state.puzzle.title,
-                             "author": this.state.puzzle.author,
-                             "date": date}
-            let statepuzzle = this.state.puzzle.puzzle;
-            // check for empty first row(s) or columns(s)
-            let minrow = Math.min(...statepuzzle.map(clue => {return clue.start[0];}));
-            let mincol = Math.min(...statepuzzle.map(clue => {return clue.start[1];}));
-
-            let puzzle = [];
-            for (let ii = 0; ii < statepuzzle.length; ii++) {
-                if (statepuzzle[ii]) {
-                    // shift starts if applicable
-                    let start = [statepuzzle[ii]["start"][0] - minrow,
-                                 statepuzzle[ii]["start"][1] - mincol];
-
-                    puzzle.push({"clue": statepuzzle[ii].clue,
-                                 "answer": statepuzzle[ii].answer,
-                                 "across": statepuzzle[ii].across,
-                                 "start": start});
-                }
-            }
-
-            puzzleObj["puzzle"] = puzzle;
-            
-            fetch("api/sendpuzzle",
-                    {
-                        method: "POST",
-                        mode: "cors",
-                        body: JSON.stringify(puzzleObj),
-                        headers: {
-                            "Content-Type": "application/json"
-                        }
-                    })
-                .then(res => res.json())
-                .then(
-                    (result) => { 
-                        console.log(result);
-                    },
-                    (error) => {
-                        console.log("error sending puzzle");
-                    }
-                );
+            this.setState({"activeDialog": "ConfirmDialog",
+                           "alert": "Really submit?"})
         }
     }
 
+    sendPuzzle() {
+        console.log("Going to send puzzle!");
+
+        // generate current date string
+        let today = new Date();
+        let yyyy = ("" + today.getFullYear());
+        let mm = ("" + 1 + today.getMonth()).padStart(2, "0");
+        let dd = ("" + today.getDate()).padStart(2, "0");
+        let date = yyyy + "-" + mm + "-" + dd;
+
+        // build puzzle object
+        let puzzleObj = {"title": this.state.puzzle.title,
+                         "author": this.state.puzzle.author,
+                         "date": date}
+        let statepuzzle = this.state.puzzle.puzzle;
+
+        // check for empty first row(s) or columns(s)
+        let minrow = Math.min(...statepuzzle.filter(x => x).map(clue => {return clue.start[0];}));
+        let mincol = Math.min(...statepuzzle.filter(x => x).map(clue => {return clue.start[1];}));
+
+        let puzzle = [];
+        for (let ii = 0; ii < statepuzzle.length; ii++) {
+            if (statepuzzle[ii]) {
+                // shift starts if applicable
+                let start = [statepuzzle[ii]["start"][0] - minrow,
+                             statepuzzle[ii]["start"][1] - mincol];
+
+                puzzle.push({"clue": statepuzzle[ii].clue,
+                             "answer": statepuzzle[ii].answer,
+                             "across": statepuzzle[ii].across,
+                             "start": start});
+            }
+        }
+
+        puzzleObj["puzzle"] = puzzle;
+
+        fetch("api/sendpuzzle",
+                {
+                    method: "POST",
+                    mode: "cors",
+                    body: JSON.stringify(puzzleObj),
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    console.log(result);
+                },
+                (error) => {
+                    console.log("error sending puzzle");
+                }
+            );
+    }
+
     showTADialog() {
-        this.setState({"activeDialog": "TitleAuthorSetter"});
+        this.setState({"defaultAuthor": this.state.puzzle.author,
+                       "defaultTitle": this.state.puzzle.title,
+                       "activeDialog": "TitleAuthorSetter"});
     }
     onTitleChange(event) {
         event.preventDefault();
@@ -590,7 +605,15 @@ class PuzzleBuilder extends React.Component {
         this.setState({"puzzle": puzzle});
     }
     onDialogExitButtonClick() {
-        this.setState({"activeDialog": null});
+        let puzzle = this.state.puzzle;
+        if (!puzzle.title) {
+            puzzle["title"] = this.state.defaultTitle;
+        }
+        if (!puzzle.author) {
+            puzzle["author"] = this.state.defaultAuthor;
+        }
+        this.setState({"puzzle": puzzle,
+                       "activeDialog": null});
     }
 
     showListView() {
@@ -629,7 +652,17 @@ class PuzzleBuilder extends React.Component {
                               message={this.state.alert}
                               onExitButtonClick={() => this.onDialogExitButtonClick()} />
                       </Modal> )
-        }    
+        } else if (this.state.activeDialog === "ConfirmDialog") {
+            modal = ( <Modal>
+                          <Confirm
+                              message="Really send puzzle?"
+                              onOkButtonClick={() => {
+                                        this.sendPuzzle();
+                                        this.onDialogExitButtonClick();
+                                        }}
+                              onCancelButtonClick={() => this.onDialogExitButtonClick()} />
+                      </Modal> )
+        }
 
         let board_width_style = {"width": 40*this.state.squares[0].length + 110};
 
@@ -692,7 +725,7 @@ class PuzzleBuilder extends React.Component {
                     <GeneralButton text="List View"
                                    onClick={() => this.showListView()} />
                     <GeneralButton text="Submit Puzzle"
-                                   onClick={() => this.sendPuzzle()} />
+                                   onClick={() => this.presendPuzzle()} />
                 </div>
 
                 {modal}
