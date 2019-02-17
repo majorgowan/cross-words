@@ -15,18 +15,23 @@ class App extends Component {
         };
     }
 
-    componentDidMount() {
+    fetchPuzzleList() {
         // get list of puzzles in database
         fetch("api/puzzlelist")
             .then(res => res.json())
             .then(
-                (result) => { 
+                (result) => {
                     this.setState({"puzzlelist": result});
                 },
                 (error) => {
                     console.log("error loading puzzlelist");
                 }
             );
+    }
+
+
+    componentDidMount() {
+        this.fetchPuzzleList();
     }
 
     onPuzzleItemClick(event) {
@@ -47,6 +52,7 @@ class App extends Component {
 
     onMainMenuClick() {
         // listener for back-to-main-menu button
+        this.fetchPuzzleList();
         this.setState({ "puzzle": null,
                         "createMode": false });
     }

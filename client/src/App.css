@@ -91,10 +91,6 @@ ol, ul {
     display: inline-block;
 }
 
-.narrow-board {
-    width: 310px;
-}
-
 .side-panel {
     width: 100px;
     display: inline-block;
@@ -106,19 +102,21 @@ ol, ul {
     text-align: center;
     width: 80%;
     background: #afbfaf;
-    margin: 50px auto;
+    margin: 20px auto;
     border-radius: 20px;
+    display: block;
 }
 
 .general-button {
     background: #aca;
-    width: 98px;
+    width: 100px;
     height: 60px;
     font-size:18px;
     cursor: pointer;
     margin: 10px 10px;
     color: #464;
     display: inline-block;
+    vertical-align: top;
 }
 
 .horiz-button {
@@ -202,30 +200,35 @@ path {
 .clue-wrapper {
     display: flex;
     text-align: center;
+    padding: 10px 0;
     margin: auto;
-    height: 50px;
     width: 100%;
 }
 
 .clue-text {
+    display: inline-block;
+    padding: 7px 10px;
     font-size: 23px;
     font-weight: normal;
-    display: inline-block;
-    margin: 10px auto;
+    width: 100%;
+    text-align: center;
 }
 
 .clue-label {
-    width: 60px;
-    padding: 0 10px 0 0;
+    width: 40px;
     display: inline-block;
+    padding-top: 10px;
+    text-align: right;
 }
 
 .editable-clue {
     background-color: rgba(0,0,0,0);
     display: inline-block;
-    width: calc(100% - 60px);
+    width: calc(100% - 50px);
+    margin-left: 5px;
+    padding-top: 5px;
+    text-align: left;
 }
-
 
 /* modals (dialogs) */
 #modal-root {
@@ -247,10 +250,30 @@ path {
 
 .dialog-wrapper {
     background: #bcb;
-    width: 440px;
-    height: 220px;
+    width: 340px;
+    height: 150px;
     border: outset #9a9;
     padding: 40px;
+    position: relative;
+}
+
+.dialog-scrollable {
+    overflow-y: scroll;
+}
+
+.dialog-message {
+    width: 100%;
+    text-align: center;
+    font-size: 24px;
+}
+
+.clue-list-dialog {
+    height: 400px;
+    width: 440px;
+}
+
+.clue-list-wrapper {
+    height: 300px;
 }
 
 .dialog-row {
@@ -258,7 +281,7 @@ path {
 }
 
 .dialog-label {
-    width: 40px;
+    width: 50px;
     display: table-cell;
     font-size: 18px;
     text-align: right;
@@ -266,7 +289,7 @@ path {
 }
 
 .setter-input {
-    width: calc(95% - 40px);
+    width: calc(98% - 20px);
     height: 34px;
     background: #ded;
     display: table-cell;
@@ -283,6 +306,8 @@ path {
 
 .exit-button-wrapper {
     padding: 30px 5px 5px 0;
-    float: right;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
 }
 

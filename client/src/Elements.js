@@ -37,7 +37,7 @@ function ExpanderButton(props) {
 
 function Clue(props) {
     return (
-        <h3 className="clue-text">{props.text}</h3>
+        <div className="clue-text">{props.text}</div>
     );
 }
 
@@ -88,14 +88,86 @@ function TitleAuthorSetter(props) {
                            value={props.author}
                            onChange={ props.onAuthorChange } />
                 </div>
-                    <div className="exit-button-wrapper">
-                        <GeneralButton text="Ok" onClick={props.onExitButtonClick}/>
-                    </div>
+                <div className="exit-button-wrapper">
+                    <GeneralButton text="Ok" onClick={props.onExitButtonClick}/>
+                </div>
             </div>
         </div>
     )
 }
 
+function Alert(props) {
+    return (
+        <div className="modal">
+            <div className="dialog-wrapper">
+                <div className="dialog-message">{props.message}</div>
+                <div className="exit-button-wrapper">
+                    <GeneralButton text="Ok" onClick={props.onExitButtonClick}/>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+function Confirm(props) {
+    return (
+        <div className="modal">
+            <div className="dialog-wrapper">
+                <div className="dialog-message">{props.message}</div>
+                <div className="exit-button-wrapper">
+                    <GeneralButton text="Ok" onClick={props.onOkButtonClick}/>
+                    <GeneralButton text="Cancel" onClick={props.onCancelButtonClick}/>
+                </div>
+            </div>
+        </div>
+    )
+}
+
+class ClueListViewer extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {"puzzle": props.puzzle};
+    }
+
+    onClueChange(event, clue) {
+        let puzzle = this.state.puzzle;
+        clue["clue"] = event.target.value;
+        this.setState({"puzzle": puzzle});
+    }
+
+    render() {
+        let bodyClass = "clue-list-wrapper";
+        if (this.state.puzzle.length > 5) {
+            bodyClass += " dialog-scrollable";
+        }
+        return (
+            <div className="modal">
+                <div className="dialog-wrapper clue-list-dialog">
+                    <div className={bodyClass}>
+                        {  this.state.puzzle.map((clue, ii) => {
+                               if (clue) {
+                               return (
+                                       <div key={ii} className="dialog-row">
+                                            <span className="dialog-label">{clue["answer"]}</span>
+                                            <input className="setter-input"
+                                                   value={clue["clue"]}
+                                                   onChange={(event) => this.onClueChange(event, clue)} />
+                                       </div> );
+                                } else {
+                                    return null;
+                                }
+                            })
+                        }
+                    </div>
+                    <div className="exit-button-wrapper">
+                        <GeneralButton text="Ok" onClick={this.props.onExitButtonClick}/>
+                    </div>
+                </div>
+            </div>
+        )};
+}
+
 export { Square, GeneralButton, ExpanderButton,
          Clue, EditableClue, PuzzleName,
-         TitleAuthorSetter };
+         TitleAuthorSetter, ClueListViewer,
+         Alert, Confirm };

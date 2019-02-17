@@ -56,8 +56,18 @@ app.get("/api/puzzle/:title", (req, res) => {
 // Receive puzzle json
 app.post("/api/sendpuzzle", (req, res) => {
     console.log(req.body);
-    res.json({"success": 1,
-              "failure": req.body});
+
+    console.log("inserting into database!");
+
+    Puzzle.create(req.body, (err) => {
+        if (err) {
+            res.json({"code": 1,
+                      "message": "unable to insert into collection " + err})
+        } else {
+            res.json({"code": 0,
+                      "failure": "no problems"});
+        }
+    });
 });
 
 // ==================================================
