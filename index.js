@@ -57,6 +57,23 @@ app.get("/api/puzzle/:title", (req, res) => {
     console.log("Sent puzzle!");
 });
 
+app.get("/api/defaultPuzzle", (req, res) => {
+
+    if (config["puzzleId"]) {
+        Puzzle.findOne( {"_id": config["puzzleId"]}, (err, puzzle) => {
+            if (!err) {
+                res.json(puzzle);
+                console.log("Sent puzzle!");
+            } else {
+                res.json({});
+            }
+        });
+    } else {
+        res.json({});
+    }
+});
+
+
 // Receive puzzle json
 app.post("/api/sendpuzzle", (req, res) => {
     console.log(req.body);
