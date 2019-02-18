@@ -12,6 +12,10 @@ app.use(express.static(path.join(__dirname, "client/build")));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// Global variables for configuring initial app
+var config = {"puzzleId": null}
+
+
 // ==================================================
 // Put all API endpoints under "/api"
 app.get("/api/puzzlelist", (req, res) => {
@@ -72,11 +76,27 @@ app.post("/api/sendpuzzle", (req, res) => {
 
 // ==================================================
 
-// The "catchall handler: for any request that doesn't
-// match one above, send back React's index.html file.
-app.get("*", (req, res) => {
+// The react app, send back React's index.html file, with
+// or without setting config variable based on parameter and queries
+app.get("/:puzzleId", (req, res) => {
+    // TODO: https://stackoverflow.com/questions/37359872/server-side-variables-to-client-side-with-react-engine-and-express
+    // if route included a puzzle id, set global variable on server
+    // on component mount, query server for possible puzzle id, then if there is one, set state.puzzle accordingly
+    console.log(req.params);
+    if (req.params.puzzleId) {
+        config["puzzleId"] = req.params.puzzleId;
+    }
+    console.log(config);
     res.sendFile(path.join(__dirname + "/client/build/index.html"));
 });
+
+// ==================================================
+// The "catchall handler: for any request that doesn't
+// match one above, send back React's index.html file.
+//app.get("*", (req, res) => {
+//    res.sendFile(path.join(__dirname + "/client/build/index.html"));
+//});
+
 
 const port = process.env.PORT || 5000;
 app.listen(port);

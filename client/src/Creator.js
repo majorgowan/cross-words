@@ -524,14 +524,14 @@ class PuzzleBuilder extends React.Component {
 
 
     presendPuzzle() {
-        // TODO: validate before sending
+        // validate before sending
         let isNotValid = this.invalidatePuzzle();
 
         if (isNotValid) {
             this.setState({"activeDialog": "AlertDialog",
                            "alert": isNotValid});
         } else {
-            // TODO: bring up dialog to confirm
+            // bring up dialog to confirm
             this.setState({"activeDialog": "ConfirmSubmitDialog",
                            "alert": "Really submit?"})
         }

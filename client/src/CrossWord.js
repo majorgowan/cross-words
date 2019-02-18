@@ -329,6 +329,7 @@ class Puzzle extends React.Component {
 
     render() {
         let board_width_style = {"width": 40*this.state.squares[0].length + 110};
+        // TODO: Add Modals (e.g. confirm return to main menu)
 
         return (
             <div className="main-block">
