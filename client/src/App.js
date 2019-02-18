@@ -29,25 +29,41 @@ class App extends Component {
             );
     }
 
-
-    componentDidMount() {
-        this.fetchPuzzleList();
-    }
-
-    onPuzzleItemClick(event) {
-        // if user clicks on puzzle in list, load it!
-        let target_name = event.target.getAttribute("name");
-
-        fetch("api/puzzle/" + target_name)
+    fetchPuzzle(puzzleName) {
+        fetch("api/puzzle/" + puzzleName)
             .then(res => res.json())
             .then(
-                (result) => { 
+                (result) => {
                     this.setState({"puzzle": result});
                 },
                 (error) => {
                     console.log(`error loading puzzle $title`);
                 }
             );
+    }
+
+    componentDidMount() {
+        // TODO: check if server has a puzzleId in its config object
+        // (if it does send back the corresponding puzzle name!)
+        fetch("api/defaultPuzzle")
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    if (Object.keys(result).length > 0) {
+                        this.setState({"puzzle": result});
+                    }
+                },
+                (error) => {
+                    console.log("no puzzle loaded")
+                }
+            );
+        this.fetchPuzzleList();
+    }
+
+    onPuzzleItemClick(event) {
+        // if user clicks on puzzle in list, load it!
+        let target_name = event.target.getAttribute("name");
+        this.fetchPuzzle(target_name);
     }
 
     onMainMenuClick() {
